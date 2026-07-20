@@ -6,9 +6,11 @@ const adminSchema = new mongoose.Schema({
         required: true
     },
     id: {
-        type: String,
+        type: Number,
         required: true,
-        unique: true
+        unique: true,
+        min: 100000,
+        max: 999999
     }
 });
 module.exports = mongoose.model("Admin", adminSchema);

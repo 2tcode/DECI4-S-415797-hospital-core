@@ -8,7 +8,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "seed": "node backend/seeds/seed.js && node microservices/appointmentservice/seeds/seed.js"
+    "start": "node backend/server.js && node microservices/appointmentservice/server.js",
+    "seed": "node seeds/seedCluster.js"
   },
   "dependencies": {
     "@faker-js/faker": "^10.5.0",

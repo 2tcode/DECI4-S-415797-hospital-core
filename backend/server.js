@@ -13,8 +13,13 @@ app.use(cors());
 app.use(express.json());
 
 const connectDB = require("./config/db");
-connectDB();
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+async function startServer() {
+    await connectDB();
+
+    app.listen(port, () => {
+        console.log(`Server is running on port ${port}`);
+    });
+}
+
+startServer();

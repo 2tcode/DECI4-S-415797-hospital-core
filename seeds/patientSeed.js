@@ -1,10 +1,8 @@
 const { faker } = require("@faker-js/faker");
-const Patient = require("../models/patient.js");
+const Patient = require("../backend/models/patientModel.js");
 
 function getRandomDisease() {
-
     const diseases = [
-        "Hypertension",
         "Type 2 Diabetes",
         "Asthma",
         "Coronary Artery Disease",
@@ -14,55 +12,49 @@ function getRandomDisease() {
         "Osteoarthritis",
         "Chronic Kidney Disease",
         "Chronic Obstructive Pulmonary Disease (COPD)",
-        "Depression",
-        "Anxiety Disorder",
         "Gastroesophageal Reflux Disease (GERD)",
         "Allergic Rhinitis",
         "Iron Deficiency Anemia",
-        "Epilepsy",
         "Psoriasis",
         "Tuberculosis",
         "Obesity"
     ];
 
-    const numberOfDiseases = Math.floor(Math.random() * 4);
+    const numberOfDiseases = faker.number.int({ min: 0, max: 5 });
+    const history = [];
 
-    const list = [];
-
-    for (let i = 0; i < numberOfDiseases; i++) {
-
-        const randomIndex = Math.floor(Math.random() * diseases.length);
-
-        if (!list.includes(diseases[randomIndex])) {
-            list.push(diseases[randomIndex]);
+    while (history.length < numberOfDiseases) {
+        const disease = faker.helpers.arrayElement(diseases);
+        if (!history.includes(disease)) {
+            history.push(disease);
         }
-
     }
 
-    if (list.length === 0) {
-        list.push("None");
-    }
-
-    return list;
+    return history.length === 0 ? [] : history;
 }
-
 
 async function seedPatients() {
     const patients = [];
+    const usedIDs = new Set();
 
-    for (let i = 0; i < 20; i++) {
-        const patient = new Patient({
+    for (let i = 0; i < 40; i++) {
+
+        let id;
+        do {
+            id = faker.number.int({ min: 100000, max: 999999 });
+        } while (usedIDs.has(id));
+
+        usedIDs.add(id);
+
+        patients.push({
             name: faker.person.fullName(),
-            DOB: faker.date.birthdate({ min: 18, max: 90, mode: 'age' }),
-            gender: faker.helpers.arrayElement(['Male', 'Female']),
-            insuranceID: faker.datatype.uuid(),
+            age: faker.number.int({ min: 18, max: 90 }),
+            gender: faker.helpers.arrayElement(["Male", "Female"]),
+            id,
             medicalHistory: getRandomDisease()
         });
-        patients.push(patient);
     }
-
     await Patient.insertMany(patients);
 }
-
 
 module.exports = seedPatients;

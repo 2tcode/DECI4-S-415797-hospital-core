@@ -15,7 +15,7 @@ function ReceptionistDashboard() {
     return (
         <div>
       <div className="top">
-      <h1 className="title">receptionist Dashboard</h1>
+      <h1 className="title">Receptionist Dashboard</h1>
       <p>Welcome, receptionist!</p>
         <button onClick={handleLogout}>Log Out</button>
       </div>

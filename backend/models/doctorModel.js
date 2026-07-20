@@ -1,46 +1,49 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const doctorSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: true
+        required: true,
+        trim: true
+    },
+    id: {
+        type: Number,
+        required: true,
+        unique: true,
+        min: 100000,
+        max: 999999
     },
     specialization: {
         type: String,
         required: true
     },
-    licenseNumber: {
-        type: String,
-        required: true,
-        unique: true
+    workDays: {
+        type: [
+            {
+                type: String,
+                enum: [
+                    "Sunday",
+                    "Monday",
+                    "Tuesday",
+                    "Wednesday",
+                    "Thursday",
+                    "Friday",
+                    "Saturday"
+                ]
+            }
+        ],
+        required: true
     },
-    VerificationStatus: {
-        type: String,
-        enum: ['Pending', 'Verified', 'Rejected'],
-        default: 'Pending'
-    },
-    schedule: [
-    {
-        day: {
+    workHours: {
+        from: {
             type: String,
-            enum: [
-                "Sunday",
-                "Monday",
-                "Tuesday",
-                "Wednesday",
-                "Thursday",
-                "Friday",
-                "Saturday"
-            ]
+            required: true
         },
-        start: {
-            type: String
-        },
-        end: {
-            type: String
+        to: {
+            type: String,
+            required: true
         }
     }
-]
 });
 
 module.exports = mongoose.model("Doctor", doctorSchema);
