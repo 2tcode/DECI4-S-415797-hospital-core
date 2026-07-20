@@ -11,6 +11,7 @@
     "seed": "node backend/seeds/seed.js && node microservices/appointmentservice/seeds/seed.js"
   },
   "dependencies": {
-    "@faker-js/faker": "^10.5.0"
+    "@faker-js/faker": "^10.5.0",
+    "canvas-confetti": "^1.9.4"
   }
 }

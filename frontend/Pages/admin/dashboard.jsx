@@ -3,20 +3,43 @@ import { Link , Outlet } from 'react-router-dom';
 function AdminDashboard() {
   return (
     <div>
-      <h1>Admin Dashboard</h1>
+      <div className="top">
+      <h1 className='title'>Admin Dashboard</h1>
       <p>Welcome, Admin!</p>
-      <Link to="/">Log out</Link>
-
-
-      <div>
-        <Link to="/admin/dashboard/general">View General</Link>
-        <Link to="/admin/dashboard/patients">View Patients</Link>
-        <Link to="/admin/dashboard/unverifieddoc">View Unverified Doctors</Link>
-        <Link to="/admin/dashboard/verifieddoc">View Verified Doctors</Link>
-        <Link to="/admin/dashboard/appointments">View Appointments</Link>
+      <Link to="/">
+        <button>Log Out</button>
+      </Link>
       </div>
+      <div className="dashboard">
 
-      <Outlet />
+              <div className="nav">
+                <Link to="add/admin">Add Admin</Link>
+                <br />
+                <Link to="add/doctor">Add Doctor</Link>
+                <br />
+                <Link to="add/receptionist">Add Receptionist</Link>
+                <br />
+                <Link to="delete/patient">Delete Patient</Link>
+                <br />
+                <Link to="delete/doctor">Delete Doctor</Link>
+                <br />
+                <Link to="delete/receptionist">Delete Receptionist</Link>
+                <br />
+                <Link to="view/general">View General</Link>
+                <br />
+                <Link to="view/patients">View Patients</Link>
+                <br />
+                <Link to="view/doctors">View Doctors</Link>
+                <br />
+                <Link to="view/receptionists">View Receptionists</Link>
+                <br />
+                <Link to="view/appointments">View Appointments</Link>
+            </div>
+            <div className="page">
+            <Outlet />
+            </div>
+            </div>
+
     </div>
   );
 }

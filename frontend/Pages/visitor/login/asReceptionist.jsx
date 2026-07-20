@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-function AsDoctor() {
+function AsReceptionist() {
   const [name, setName] = useState("");
   const [id, setId] = useState("");
 
@@ -14,7 +14,7 @@ function AsDoctor() {
 
   return (
     <div>
-      <h1>Login as Doctor</h1>
+      <h1>Login as Receptionist</h1>
 
       <div>
         <label>Name: </label>
@@ -41,7 +41,7 @@ function AsDoctor() {
       <br />
 
       {isValid ? (
-        <Link to="/doctor/dashboard">
+        <Link to="/receptionist/dashboard">
           <button>Login</button>
         </Link>
       ) : (
@@ -51,4 +51,4 @@ function AsDoctor() {
   );
 }
 
-export default AsDoctor;
+export default AsReceptionist;
