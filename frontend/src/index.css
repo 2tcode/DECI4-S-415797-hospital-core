@@ -1,15 +1,15 @@
 .container {
-    max-width: 900px;
-    margin: 40px auto;
-    padding: 25px;
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 25px;
 }
 
 .box {
-    background: white;
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 20px;
-    box-shadow: 0 3px 10px rgba(0,0,0,.1);
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
 }
 
 /* ========================= */
@@ -17,31 +17,31 @@
 /* ========================= */
 
 .title {
-    font-size: 65px;
-    margin: 15px;
+  font-size: 65px;
+  margin: 15px;
 }
 
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-    margin: 0;
-    padding: 40px;
+  margin: 0;
+  padding: 40px;
 
-    background: #F5F7FA;
-    font-family: Arial, Helvetica, sans-serif;
-    color: #2D3748;
+  background: #f5f7fa;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #2d3748;
 }
 
 h1 {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 h2 {
-    color: #2F80ED;
+  color: #2f80ed;
 }
 
 /* ========================= */
@@ -49,13 +49,13 @@ h2 {
 /* ========================= */
 
 .dashboard {
-    display: flex;
-    gap: 30px;
-    padding: 25px;
+  display: flex;
+  gap: 30px;
+  padding: 25px;
 }
 
 .mainContent {
-    flex: 1;
+  flex: 1;
 }
 
 /* ========================= */
@@ -63,27 +63,27 @@ h2 {
 /* ========================= */
 
 .top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
-    background: white;
+  background: white;
 
-    padding: 20px 30px;
+  padding: 20px 30px;
 
-    margin-bottom: 30px;
+  margin-bottom: 30px;
 
-    border-radius: 15px;
+  border-radius: 15px;
 
-    box-shadow: 0 4px 15px rgba(0,0,0,.08);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 }
 
 .top h1 {
-    margin-bottom: 5px;
+  margin-bottom: 5px;
 }
 
 .top p {
-    color: gray;
+  color: gray;
 }
 
 /* ========================= */
@@ -91,43 +91,40 @@ h2 {
 /* ========================= */
 
 .nav {
+  width: 240px;
 
-    width: 240px;
+  background: white;
 
-    background: white;
+  padding: 20px;
 
-    padding: 20px;
+  border-radius: 15px;
 
-    border-radius: 15px;
+  display: flex;
+  flex-direction: column;
 
-    display: flex;
-    flex-direction: column;
+  gap: 12px;
 
-    gap: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 
-    box-shadow: 0 4px 15px rgba(0,0,0,.08);
-
-    height: fit-content;
+  height: fit-content;
 }
 
 .nav a {
+  text-decoration: none;
 
-    text-decoration: none;
+  color: #2d3748;
 
-    color: #2D3748;
+  padding: 12px;
 
-    padding: 12px;
+  border-radius: 10px;
 
-    border-radius: 10px;
-
-    transition: .25s;
+  transition: 0.25s;
 }
 
 .nav a:hover {
+  background: #2f80ed;
 
-    background: #2F80ED;
-
-    color: white;
+  color: white;
 }
 
 /* ========================= */
@@ -135,8 +132,7 @@ h2 {
 /* ========================= */
 
 .page {
-
-    flex: 1;
+  flex: 1;
 }
 
 /* ========================= */
@@ -144,14 +140,13 @@ h2 {
 /* ========================= */
 
 .cardContainer {
+  display: flex;
 
-    display: flex;
+  flex-wrap: wrap;
 
-    flex-wrap: wrap;
+  gap: 20px;
 
-    gap: 20px;
-
-    margin-top: 20px;
+  margin-top: 20px;
 }
 
 /* ========================= */
@@ -159,41 +154,37 @@ h2 {
 /* ========================= */
 
 .card {
+  background: white;
 
-    background: white;
+  width: 340px;
 
-    width: 340px;
+  padding: 20px;
 
-    padding: 20px;
+  border-radius: 15px;
 
-    border-radius: 15px;
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.08);
 
-    box-shadow: 0 5px 18px rgba(0,0,0,.08);
-
-    transition: .3s;
+  transition: 0.3s;
 }
 
 .card:hover {
+  transform: translateY(-4px);
 
-    transform: translateY(-4px);
-
-    box-shadow: 0 10px 20px rgba(0,0,0,.12);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
 }
 
 .card h2 {
+  margin-bottom: 15px;
 
-    margin-bottom: 15px;
+  padding-bottom: 10px;
 
-    padding-bottom: 10px;
-
-    border-bottom: 2px solid #E5E7EB;
+  border-bottom: 2px solid #e5e7eb;
 }
 
 .card p {
+  margin: 10px 0;
 
-    margin: 10px 0;
-
-    line-height: 1.5;
+  line-height: 1.5;
 }
 
 /* ========================= */
@@ -202,28 +193,26 @@ h2 {
 
 input,
 select {
+  width: 300px;
 
-    width: 300px;
+  padding: 10px;
 
-    padding: 10px;
+  margin: 8px 0;
 
-    margin: 8px 0;
+  border-radius: 8px;
 
-    border-radius: 8px;
+  border: 1px solid #cbd5e1;
 
-    border: 1px solid #CBD5E1;
-
-    font-size: 15px;
+  font-size: 15px;
 }
 
 input:focus,
 select:focus {
+  outline: none;
 
-    outline: none;
+  border-color: #2f80ed;
 
-    border-color: #2F80ED;
-
-    box-shadow: 0 0 5px rgba(47,128,237,.3);
+  box-shadow: 0 0 5px rgba(47, 128, 237, 0.3);
 }
 
 /* ========================= */
@@ -231,31 +220,29 @@ select:focus {
 /* ========================= */
 
 button {
+  padding: 10px 10px;
 
-    padding: 10px 10px;
+  margin-top: 12px;
 
-    margin-top: 12px;
+  margin-left: 8px;
 
-    margin-left: 8px;
+  margin-right: 8px;
 
-    margin-right: 8px;
+  border: none;
 
-    border: none;
+  border-radius: 8px;
 
-    border-radius: 8px;
+  background: #2f80ed;
 
-    background: #2F80ED;
+  color: white;
 
-    color: white;
+  cursor: pointer;
 
-    cursor: pointer;
-
-    transition: .25s;
+  transition: 0.25s;
 }
 
 button:hover {
-
-    background: #1E66D0;
+  background: #1e66d0;
 }
 
 /* ========================= */
@@ -263,13 +250,11 @@ button:hover {
 /* ========================= */
 
 .deleteButton {
-
-    background: #E74C3C;
+  background: #e74c3c;
 }
 
 .deleteButton:hover {
-
-    background: #C0392B;
+  background: #c0392b;
 }
 
 /* ========================= */
@@ -277,13 +262,11 @@ button:hover {
 /* ========================= */
 
 .completeButton {
-
-    background: #27AE60;
+  background: #27ae60;
 }
 
 .completeButton:hover {
-
-    background: #1E874B;
+  background: #1e874b;
 }
 
 /* ========================= */
@@ -291,15 +274,13 @@ button:hover {
 /* ========================= */
 
 ul {
+  margin-top: 10px;
 
-    margin-top: 10px;
-
-    padding-left: 20px;
+  padding-left: 20px;
 }
 
 li {
-
-    margin-bottom: 5px;
+  margin-bottom: 5px;
 }
 
 /* ========================= */
@@ -307,32 +288,29 @@ li {
 /* ========================= */
 
 table {
+  width: 100%;
 
-    width: 100%;
+  border-collapse: collapse;
 
-    border-collapse: collapse;
+  background: white;
 
-    background: white;
+  border-radius: 12px;
 
-    border-radius: 12px;
-
-    overflow: hidden;
+  overflow: hidden;
 }
 
 th {
+  background: #2f80ed;
 
-    background: #2F80ED;
+  color: white;
 
-    color: white;
-
-    padding: 15px;
+  padding: 15px;
 }
 
 td {
+  padding: 12px;
 
-    padding: 12px;
-
-    border-bottom: 1px solid #E5E7EB;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 /* ========================= */
@@ -340,25 +318,20 @@ td {
 /* ========================= */
 
 @media (max-width: 900px) {
+  .dashboard {
+    flex-direction: column;
+  }
 
-    .dashboard {
+  .nav {
+    width: 100%;
+  }
 
-        flex-direction: column;
-    }
+  .card {
+    width: 100%;
+  }
 
-    .nav {
-
-        width: 100%;
-    }
-
-    .card {
-
-        width: 100%;
-    }
-
-    input,
-    select {
-
-        width: 100%;
-    }
+  input,
+  select {
+    width: 100%;
+  }
 }

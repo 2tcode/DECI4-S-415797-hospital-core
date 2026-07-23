@@ -18,9 +18,12 @@ function Home() {
       <Link to="/login/receptionist">
         <button>Login as Receptionist</button>
       </Link>
-      <br/>
-      <br/>
-      <Link to="/login/admin"> <button>Login as Admin</button></Link>
+      <br />
+      <br />
+      <Link to="/login/admin">
+        {" "}
+        <button>Login as Admin</button>
+      </Link>
     </div>
   );
 }

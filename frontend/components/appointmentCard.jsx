@@ -1,7 +1,7 @@
 function AppointmentCard({ selected, role, onCancel, onComplete }) {
   const handleCancel = () => {
     const confirmed = window.confirm(
-      "Are you sure you want to cancel this appointment?"
+      "Are you sure you want to cancel this appointment?",
     );
 
     if (confirmed) {
@@ -10,9 +10,7 @@ function AppointmentCard({ selected, role, onCancel, onComplete }) {
   };
 
   const handleComplete = () => {
-    const confirmed = window.confirm(
-      "Mark this appointment as completed?"
-    );
+    const confirmed = window.confirm("Mark this appointment as completed?");
 
     if (confirmed) {
       onComplete(selected.appointmentID);
@@ -36,11 +34,13 @@ function AppointmentCard({ selected, role, onCancel, onComplete }) {
       </p>
 
       <p>
-        <strong>Patient:</strong> {selected.patientName} (ID: {selected.patientID})
+        <strong>Patient:</strong> {selected.patientName} (ID:{" "}
+        {selected.patientID})
       </p>
 
       <p>
-        <strong>Doctor:</strong> Dr. {selected.doctorName} (ID: {selected.doctorID})
+        <strong>Doctor:</strong> Dr. {selected.doctorName} (ID:{" "}
+        {selected.doctorID})
       </p>
 
       <p>
@@ -48,7 +48,8 @@ function AppointmentCard({ selected, role, onCancel, onComplete }) {
       </p>
 
       <p>
-        <strong>Time:</strong> {selected.appointmentTime.from} - {selected.appointmentTime.to}
+        <strong>Time:</strong> {selected.appointmentTime.from} -{" "}
+        {selected.appointmentTime.to}
       </p>
 
       <p>

@@ -1,7 +1,7 @@
 function ReceptionistCard({ selected, role, onDelete }) {
   const handleDelete = () => {
     const confirmed = window.confirm(
-      `Are you sure you want to delete ${selected.name}?`
+      `Are you sure you want to delete ${selected.name}?`,
     );
 
     if (confirmed) {

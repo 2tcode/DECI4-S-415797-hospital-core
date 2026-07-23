@@ -8,7 +8,7 @@ import PatientCard from "../components/patientCard";
 import DoctorCard from "../components/doctorCard";
 import AppointmentCard from "../components/appointmentCard";
 
-import AdminDashboard from "../pages/admin/dashboard"; 
+import AdminDashboard from "../pages/admin/dashboard";
 import DeleteReceptionist from "../pages/admin/delete/deleteReceptionist";
 import DeleteDoctor from "../pages/admin/delete/deleteDoctor";
 import DeletePatientAdmin from "../pages/admin/delete/deletePatientAdmin";
@@ -22,7 +22,7 @@ import PatientView from "../pages/admin/view/patientView";
 import GeneralView from "../pages/admin/view/generalView";
 
 import DoctorDashboard from "../pages/doctor/dashboard";
-import AppointmentHistory from "../pages/doctor/appointments/appointmentHistory"; 
+import AppointmentHistory from "../pages/doctor/appointments/appointmentHistory";
 import ViewAppointment from "../pages/doctor/appointments/viewAppointment";
 import ViewPatient from "../pages/doctor/configPatient/viewPatient";
 
@@ -36,17 +36,14 @@ import AsAdmin from "../pages/visitor/login/asAdmin";
 import AsDoctor from "../pages/visitor/login/asDoctor";
 import AsReceptionist from "../pages/visitor/login/asReceptionist";
 
-
 function App() {
   return (
     <>
       <Routes>
-
         <Route path="/" element={<Home />} />
         <Route path="/login/admin" element={<AsAdmin />} />
         <Route path="/login/doctor" element={<AsDoctor />} />
         <Route path="/login/receptionist" element={<AsReceptionist />} />
-
 
         <Route path="/admin/dashboard" element={<AdminDashboard />}>
           <Route path="add/admin" element={<AddAdmin />} />
@@ -63,18 +60,20 @@ function App() {
         </Route>
 
         <Route path="/doctor/dashboard/:id" element={<DoctorDashboard />}>
-          <Route path="appointments/history" element={<AppointmentHistory />}/>
-          <Route path="appointments/view" element={<ViewAppointment />}/>
-          <Route path="patients/view" element={<ViewPatient />}/>
+          <Route path="appointments/history" element={<AppointmentHistory />} />
+          <Route path="appointments/view" element={<ViewAppointment />} />
+          <Route path="patients/view" element={<ViewPatient />} />
         </Route>
 
-        <Route path="/receptionist/dashboard"element={<ReceptionistDashboard />}>
-          <Route path="appointments/book" element={<Book />}/>
-          <Route path="appointments/cancel" element={<Cancel />}/>
-          <Route path="patients/add" element={<AddNew />}/>
-          <Route path="patients/delete" element={<DeletePatient />}/>
+        <Route
+          path="/receptionist/dashboard"
+          element={<ReceptionistDashboard />}
+        >
+          <Route path="appointments/book" element={<Book />} />
+          <Route path="appointments/cancel" element={<Cancel />} />
+          <Route path="patients/add" element={<AddNew />} />
+          <Route path="patients/delete" element={<DeletePatient />} />
         </Route>
-
       </Routes>
     </>
   );

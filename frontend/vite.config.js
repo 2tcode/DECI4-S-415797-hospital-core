@@ -9,10 +9,10 @@ export default defineConfig({
         target: "http://localhost:5000",
         changeOrigin: true,
       },
-              "/appointments": {
-            target: "http://localhost:5005",
-            changeOrigin: true,
-        },
+      "/appointments": {
+        target: "http://localhost:5005",
+        changeOrigin: true,
+      },
     },
   },
 });

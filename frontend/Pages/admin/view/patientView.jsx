@@ -3,28 +3,28 @@ import axios from "axios";
 import PatientCard from "../../../components/patientCard";
 
 function PatientView() {
-const [patients, setPatients] = useState([]);
+  const [patients, setPatients] = useState([]);
 
-const fetchPatients = async () => {
-  try {
-    const response = await axios.get("/api/patient");
-    setPatients(response.data);
-  } catch (err) {
-    console.error(err);
-    alert("Couldn't load patients.");
-  }
-};
+  const fetchPatients = async () => {
+    try {
+      const response = await axios.get("/api/patient");
+      setPatients(response.data);
+    } catch (err) {
+      console.error(err);
+      alert("Couldn't load patients.");
+    }
+  };
 
-useEffect(() => {
-  fetchPatients();
-}, []);
+  useEffect(() => {
+    fetchPatients();
+  }, []);
 
   const [search, setSearch] = useState("");
 
   const filteredPatients = patients.filter(
     (patient) =>
       patient.name.toLowerCase().includes(search.toLowerCase()) ||
-      patient.id.toString().includes(search)
+      patient.id.toString().includes(search),
   );
 
   return (
@@ -41,17 +41,13 @@ useEffect(() => {
       <br />
       <br />
       <div className="cardContainer">
-      {filteredPatients.length > 0 ? (
-        filteredPatients.map((patient) => (
-          <PatientCard
-            key={patient.id}
-            selected={patient}
-            role="view"
-          />
-        ))
-      ) : (
-        <p>No patients found.</p>
-      )}
+        {filteredPatients.length > 0 ? (
+          filteredPatients.map((patient) => (
+            <PatientCard key={patient.id} selected={patient} role="view" />
+          ))
+        ) : (
+          <p>No patients found.</p>
+        )}
       </div>
     </div>
   );

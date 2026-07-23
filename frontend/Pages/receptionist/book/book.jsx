@@ -4,50 +4,49 @@ import DoctorCard from "../../../components/doctorCard";
 import PatientCard from "../../../components/patientCard";
 
 function Book() {
- const [doctors, setDoctors] = useState([]);
-const [patients, setPatients] = useState([]);
-const [appointments, setAppointments] = useState([]);
+  const [doctors, setDoctors] = useState([]);
+  const [patients, setPatients] = useState([]);
+  const [appointments, setAppointments] = useState([]);
 
-const fetchDoctors = async () => {
-  try {
-    const response = await axios.get("/api/doctor");
-    setDoctors(response.data);
-  } catch (err) {
-    console.error(err);
-    alert("Couldn't load doctors.");
-  }
-};
+  const fetchDoctors = async () => {
+    try {
+      const response = await axios.get("/api/doctor");
+      setDoctors(response.data);
+    } catch (err) {
+      console.error(err);
+      alert("Couldn't load doctors.");
+    }
+  };
 
-const fetchPatients = async () => {
-  try {
-    const response = await axios.get("/api/patient");
-    setPatients(response.data);
-  } catch (err) {
-    console.error(err);
-    alert("Couldn't load patients.");
-  }
-};
+  const fetchPatients = async () => {
+    try {
+      const response = await axios.get("/api/patient");
+      setPatients(response.data);
+    } catch (err) {
+      console.error(err);
+      alert("Couldn't load patients.");
+    }
+  };
 
-const fetchAppointments = async () => {
-  try {
-    const response = await axios.get("/appointments");
-    setAppointments(response.data);
-  } catch (err) {
-    console.error(err);
-    alert("Couldn't load appointments.");
-  }
-};
+  const fetchAppointments = async () => {
+    try {
+      const response = await axios.get("/appointments");
+      setAppointments(response.data);
+    } catch (err) {
+      console.error(err);
+      alert("Couldn't load appointments.");
+    }
+  };
 
-useEffect(() => {
-  fetchDoctors();
-  fetchPatients();
-  fetchAppointments();
-}, []);
+  useEffect(() => {
+    fetchDoctors();
+    fetchPatients();
+    fetchAppointments();
+  }, []);
 
-
-const [nextAppointmentId] = useState(
-  Math.floor(Math.random() * 900000) + 100000
-);
+  const [nextAppointmentId] = useState(
+    Math.floor(Math.random() * 900000) + 100000,
+  );
 
   const [doctorSearch, setDoctorSearch] = useState("");
   const [patientSearch, setPatientSearch] = useState("");
@@ -70,13 +69,12 @@ const [nextAppointmentId] = useState(
     if (selectedDate) {
       const [year, month, day] = selectedDate.split("-").map(Number);
 
-      const weekday = new Date(
-        year,
-        month - 1,
-        day
-      ).toLocaleDateString("en-US", {
-        weekday: "long",
-      });
+      const weekday = new Date(year, month - 1, day).toLocaleDateString(
+        "en-US",
+        {
+          weekday: "long",
+        },
+      );
 
       matchesDate = doctor.workDays.includes(weekday);
     }
@@ -86,7 +84,7 @@ const [nextAppointmentId] = useState(
     if (selectedTime) {
       matchesTime =
         selectedTime >= doctor.workHours.from &&
-        selectedTime < doctor.workHours.to
+        selectedTime < doctor.workHours.to;
     }
 
     return matchesSearch && matchesDate && matchesTime;
@@ -99,46 +97,44 @@ const [nextAppointmentId] = useState(
     );
   });
 
+  const handleBookAppointment = async () => {
+    const [hours, minutes] = selectedTime.split(":").map(Number);
 
-const handleBookAppointment = async () => {
-  const [hours, minutes] = selectedTime.split(":").map(Number);
+    const end = new Date();
+    end.setHours(hours, minutes + 30);
 
-  const end = new Date();
-  end.setHours(hours, minutes + 30);
+    const endTime = end.toTimeString().slice(0, 5);
 
-  const endTime = end.toTimeString().slice(0, 5);
+    const newAppointment = {
+      appointmentID: nextAppointmentId,
+      doctorID: selectedDoctor.id,
+      doctorName: selectedDoctor.name,
+      patientID: selectedPatient.id,
+      patientName: selectedPatient.name,
+      appointmentDate: selectedDate,
+      appointmentTime: {
+        from: selectedTime,
+        to: endTime,
+      },
+      status: "Booked",
+    };
 
+    try {
+      await axios.post("/appointments", newAppointment);
 
-  const newAppointment = {
-    appointmentID: nextAppointmentId,
-    doctorID: selectedDoctor.id,
-    doctorName: selectedDoctor.name,
-    patientID: selectedPatient.id,
-    patientName: selectedPatient.name,
-    appointmentDate: selectedDate,
-    appointmentTime: {
-      from: selectedTime,
-      to: endTime,
-    },
-    status: "Booked",
+      alert("Appointment booked successfully!");
+
+      fetchAppointments();
+
+      setSelectedDoctor(null);
+      setSelectedPatient(null);
+      setSelectedDate("");
+      setSelectedTime("");
+    } catch (err) {
+      console.error(err);
+      alert("Couldn't book appointment.");
+    }
   };
-
-  try {
-    await axios.post("/appointments", newAppointment);
-
-    alert("Appointment booked successfully!");
-
-    fetchAppointments();
-
-    setSelectedDoctor(null);
-    setSelectedPatient(null);
-    setSelectedDate("");
-    setSelectedTime("");
-  } catch (err) {
-    console.error(err);
-    alert("Couldn't book appointment.");
-  }
-};
 
   return (
     <div>
@@ -172,21 +168,20 @@ const handleBookAppointment = async () => {
       <br />
       <br />
       <div className="cardContainer">
-
-      {filteredDoctors.length > 0 ? (
-        filteredDoctors.map((doctor) => (
-          <DoctorCard
-            key={doctor.id}
-            selected={doctor}
-            role="book"
-            onBook={() => {
-              setSelectedDoctor(doctor);
-            }}
-          />
-        ))
-      ) : (
-        <p>No doctors available.</p>
-      )}
+        {filteredDoctors.length > 0 ? (
+          filteredDoctors.map((doctor) => (
+            <DoctorCard
+              key={doctor.id}
+              selected={doctor}
+              role="book"
+              onBook={() => {
+                setSelectedDoctor(doctor);
+              }}
+            />
+          ))
+        ) : (
+          <p>No doctors available.</p>
+        )}
       </div>
       <hr />
 
@@ -203,20 +198,20 @@ const handleBookAppointment = async () => {
       <br />
 
       <div className="cardContainer">
-      {filteredPatients.length > 0 ? (
-        filteredPatients.map((patient) => (
-          <PatientCard
-            key={patient.id}
-            selected={patient}
-            role="book"
-            onSelect={() => {
-              setSelectedPatient(patient);
-            }}
-          />
-        ))
-      ) : (
-        <p>No patients found.</p>
-      )}
+        {filteredPatients.length > 0 ? (
+          filteredPatients.map((patient) => (
+            <PatientCard
+              key={patient.id}
+              selected={patient}
+              role="book"
+              onSelect={() => {
+                setSelectedPatient(patient);
+              }}
+            />
+          ))
+        ) : (
+          <p>No patients found.</p>
+        )}
       </div>
 
       <hr />
@@ -228,8 +223,7 @@ const handleBookAppointment = async () => {
       </p>
 
       <p>
-        <strong>Doctor:</strong>{" "}
-        {selectedDoctor ? selectedDoctor.name : "None"}
+        <strong>Doctor:</strong> {selectedDoctor ? selectedDoctor.name : "None"}
       </p>
 
       <p>
@@ -243,21 +237,16 @@ const handleBookAppointment = async () => {
       </p>
 
       <p>
-        <strong>Date:</strong>{" "}
-        {selectedDate || "None"}
+        <strong>Date:</strong> {selectedDate || "None"}
       </p>
 
       <p>
-        <strong>Time:</strong>{" "}
-        {selectedTime || "None"}
+        <strong>Time:</strong> {selectedTime || "None"}
       </p>
 
       <button
         disabled={
-          !selectedDoctor ||
-          !selectedPatient ||
-          !selectedDate ||
-          !selectedTime
+          !selectedDoctor || !selectedPatient || !selectedDate || !selectedTime
         }
         onClick={handleBookAppointment}
       >

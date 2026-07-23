@@ -1,4 +1,4 @@
-import { useEffect, useState, } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import AppointmentCard from "../../../components/appointmentCard";
@@ -40,8 +40,9 @@ function ViewAppointment() {
         .includes(patientSearch.toLowerCase()) ||
       appointment.patientID.toString().includes(patientSearch);
 
-    const matchesAppointment =
-      appointment.appointmentID.toString().includes(appointmentSearch);
+    const matchesAppointment = appointment.appointmentID
+      .toString()
+      .includes(appointmentSearch);
 
     return matchesPatient && matchesAppointment;
   });

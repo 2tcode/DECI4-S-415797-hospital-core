@@ -11,26 +11,26 @@ function NewReceptionist() {
     setName(value);
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  const receptionist = {
-    name,
-    id: Number(id),
+    const receptionist = {
+      name,
+      id: Number(id),
+    };
+
+    try {
+      await axios.post("/api/receptionist", receptionist);
+
+      alert("Receptionist added successfully!");
+
+      setName("");
+      setId("");
+    } catch (err) {
+      console.error(err);
+      alert("Couldn't add receptionist.");
+    }
   };
-
-  try {
-    await axios.post("/api/receptionist", receptionist);
-
-    alert("Receptionist added successfully!");
-
-    setName("");
-    setId("");
-  } catch (err) {
-    console.error(err);
-    alert("Couldn't add receptionist.");
-  }
-};
 
   return (
     <div>
@@ -65,9 +65,7 @@ const handleSubmit = async (e) => {
 
         <br />
 
-        <button type="submit">
-          Add Receptionist
-        </button>
+        <button type="submit">Add Receptionist</button>
       </form>
     </div>
   );

@@ -1,50 +1,50 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import ReceptionistCard from "../../../components/receptionisCard";
+import ReceptionistCard from "../../../components/receptionistCard";
 
 function DeleteReceptionist() {
-const [receptionists, setReceptionists] = useState([]);
+  const [receptionists, setReceptionists] = useState([]);
 
-const fetchReceptionists = async () => {
-  try {
-    const response = await axios.get("/api/receptionist");
-    setReceptionists(response.data);
-  } catch (err) {
-    console.error(err);
-    alert("Couldn't load receptionists.");
-  }
-};
+  const fetchReceptionists = async () => {
+    try {
+      const response = await axios.get("/api/receptionist");
+      setReceptionists(response.data);
+    } catch (err) {
+      console.error(err);
+      alert("Couldn't load receptionists.");
+    }
+  };
 
-useEffect(() => {
-  fetchReceptionists();
-}, []);
+  useEffect(() => {
+    fetchReceptionists();
+  }, []);
 
   const [search, setSearch] = useState("");
 
   const filteredReceptionists = receptionists.filter(
     (receptionist) =>
       receptionist.name.toLowerCase().includes(search.toLowerCase()) ||
-      receptionist.id.toString().includes(search)
+      receptionist.id.toString().includes(search),
   );
 
-const handleDelete = async (id) => {
-  const confirmed = window.confirm(
-    "Are you sure you want to delete this receptionist?"
-  );
+  const handleDelete = async (id) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this receptionist?",
+    );
 
-  if (!confirmed) return;
+    if (!confirmed) return;
 
-  try {
-    await axios.delete(`/api/receptionist/${id}`);
+    try {
+      await axios.delete(`/api/receptionist/${id}`);
 
-    alert("Receptionist deleted successfully!");
+      alert("Receptionist deleted successfully!");
 
-    fetchReceptionists();
-  } catch (err) {
-    console.error(err);
-    alert("Couldn't delete receptionist.");
-  }
-};
+      fetchReceptionists();
+    } catch (err) {
+      console.error(err);
+      alert("Couldn't delete receptionist.");
+    }
+  };
 
   return (
     <div>
@@ -60,19 +60,18 @@ const handleDelete = async (id) => {
       <br />
       <br />
       <div className="cardContainer">
-
-      {filteredReceptionists.length > 0 ? (
-        filteredReceptionists.map((receptionist) => (
-          <ReceptionistCard
-            key={receptionist.id}
-            selected={receptionist}
-            role="delete"
-            onDelete={handleDelete}
-          />
-        ))
-      ) : (
-        <p>No receptionists found.</p>
-      )}
+        {filteredReceptionists.length > 0 ? (
+          filteredReceptionists.map((receptionist) => (
+            <ReceptionistCard
+              key={receptionist.id}
+              selected={receptionist}
+              role="delete"
+              onDelete={handleDelete}
+            />
+          ))
+        ) : (
+          <p>No receptionists found.</p>
+        )}
       </div>
     </div>
   );

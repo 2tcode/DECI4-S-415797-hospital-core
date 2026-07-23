@@ -9,7 +9,7 @@ function NewDoctor() {
   const [workHours, setWorkHours] = useState({
     from: "",
     to: "",
-  })
+  });
 
   const days = [
     "Saturday",
@@ -17,7 +17,7 @@ function NewDoctor() {
     "Monday",
     "Tuesday",
     "Wednesday",
-    "Thursday"
+    "Thursday",
   ];
 
   const handleDayChange = (day) => {
@@ -33,40 +33,40 @@ function NewDoctor() {
     setName(value);
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  const doctor = {
-    name,
-    id: Number(id),
-    specialization: specialization,
-    workDays,
-    workHours,
-  };
+    const doctor = {
+      name,
+      id: Number(id),
+      specialization: specialization,
+      workDays,
+      workHours,
+    };
 
-  try {
-    await axios.post("/api/doctor", doctor);
+    try {
+      await axios.post("/api/doctor", doctor);
 
-    alert("Doctor added successfully!");
+      alert("Doctor added successfully!");
 
-    setName("");
-    setId("");
-    setSpecialization("");
-    setWorkDays([]);
-    setWorkHours({
-      from:"",
-      to:""
-    });
-  } catch (err) {
-    console.error(err);
-    alert("Couldn't add doctor.");
-        if (err.code === 11000) {
-      return res.status(409).json({
-        message: "A doctor with this ID already exists.",
+      setName("");
+      setId("");
+      setSpecialization("");
+      setWorkDays([]);
+      setWorkHours({
+        from: "",
+        to: "",
       });
+    } catch (err) {
+      console.error(err);
+      alert("Couldn't add doctor.");
+      if (err.code === 11000) {
+        return res.status(409).json({
+          message: "A doctor with this ID already exists.",
+        });
+      }
     }
-  }
-}
+  };
 
   return (
     <div>
@@ -121,20 +121,24 @@ const handleSubmit = async (e) => {
           <input
             type="time"
             value={workHours.from}
-            onChange={(e) => setWorkHours({
-      ...workHours,
-      from: e.target.value,
-    })}
+            onChange={(e) =>
+              setWorkHours({
+                ...workHours,
+                from: e.target.value,
+              })
+            }
             required
-          />
-          {" "}to{" "}
+          />{" "}
+          to{" "}
           <input
             type="time"
             value={workHours.to}
-            onChange={(e) =>     setWorkHours({
-      ...workHours,
-      to: e.target.value,
-    })}
+            onChange={(e) =>
+              setWorkHours({
+                ...workHours,
+                to: e.target.value,
+              })
+            }
             required
           />
         </div>

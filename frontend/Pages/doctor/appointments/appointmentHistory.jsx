@@ -3,25 +3,23 @@ import axios from "axios";
 import AppointmentCard from "../../../components/appointmentCard";
 import { useParams } from "react-router-dom";
 
-
 function AppointmentHistory() {
   const { id } = useParams();
   const [appointments, setAppointments] = useState([]);
 
   useEffect(() => {
     fetchAppointments();
-}, []);
+  }, []);
 
-const fetchAppointments = async () => {
-  try {
-    const response = await axios.get(`/appointments/doctor/${id}`);
-    setAppointments(response.data);
-  } catch (err) {
-    console.error(err);
-    alert("Couldn't load appointments.");
-  }
-};
-
+  const fetchAppointments = async () => {
+    try {
+      const response = await axios.get(`/appointments/doctor/${id}`);
+      setAppointments(response.data);
+    } catch (err) {
+      console.error(err);
+      alert("Couldn't load appointments.");
+    }
+  };
 
   const [patientSearch, setPatientSearch] = useState("");
   const [appointmentSearch, setAppointmentSearch] = useState("");
@@ -33,8 +31,9 @@ const fetchAppointments = async () => {
         .includes(patientSearch.toLowerCase()) ||
       appointment.patientID.toString().includes(patientSearch);
 
-    const matchesAppointment =
-      appointment.appointmentID.toString().includes(appointmentSearch);
+    const matchesAppointment = appointment.appointmentID
+      .toString()
+      .includes(appointmentSearch);
 
     return matchesPatient && matchesAppointment;
   });
@@ -62,17 +61,17 @@ const fetchAppointments = async () => {
       <br />
       <br />
       <div className="cardContainer">
-      {filteredAppointments.length > 0 ? (
-        filteredAppointments.map((appointment) => (
-          <AppointmentCard
-            key={appointment.appointmentID}
-            selected={appointment}
-            role="history"
-          />
-        ))
-      ) : (
-        <p>No appointments found.</p>
-      )}
+        {filteredAppointments.length > 0 ? (
+          filteredAppointments.map((appointment) => (
+            <AppointmentCard
+              key={appointment.appointmentID}
+              selected={appointment}
+              role="history"
+            />
+          ))
+        ) : (
+          <p>No appointments found.</p>
+        )}
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 function DoctorCard({ selected, role, onDelete, onBook }) {
   const handleDelete = () => {
     const confirmed = window.confirm(
-      `Are you sure you want to delete Dr. ${selected.name}?`
+      `Are you sure you want to delete Dr. ${selected.name}?`,
     );
 
     if (confirmed) {

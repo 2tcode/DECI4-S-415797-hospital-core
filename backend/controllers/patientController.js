@@ -1,20 +1,20 @@
 const Patient = require("../models/patientModel");
 
 exports.getPatients = async (req, res) => {
-    try {
-        const patients = await Patient.find();
-        res.json(patients);
-    } catch (err) {
-        console.error("GET PATIENTS ERROR:", err);
-        res.status(500).json({ error: err.message });
-    }
+  try {
+    const patients = await Patient.find();
+    res.json(patients);
+  } catch (err) {
+    console.error("GET PATIENTS ERROR:", err);
+    res.status(500).json({ error: err.message });
+  }
 };
 exports.updatePatient = async (req, res) => {
   try {
     const patient = await Patient.findOneAndUpdate(
       { id: Number(req.params.id) },
       { medicalHistory: req.body.medicalHistory },
-      { new: true }
+      { new: true },
     );
 
     if (!patient) {
@@ -28,28 +28,28 @@ exports.updatePatient = async (req, res) => {
 };
 
 exports.createPatient = async (req, res) => {
-    try {
-        console.log("Body received:", req.body);
+  try {
+    console.log("Body received:", req.body);
 
-        const patient = new Patient(req.body);
+    const patient = new Patient(req.body);
 
-        console.log("Patient object:", patient);
+    console.log("Patient object:", patient);
 
-        await patient.save();
+    await patient.save();
 
-        console.log("Saved successfully!");
+    console.log("Saved successfully!");
 
-        res.status(201).json(patient);
-    } catch (err) {
-        console.error("CREATE PATIENT ERROR:");
-        console.error(err);
-        console.error(err.stack);
+    res.status(201).json(patient);
+  } catch (err) {
+    console.error("CREATE PATIENT ERROR:");
+    console.error(err);
+    console.error(err.stack);
 
-        res.status(500).json({
-            error: err.message,
-            name: err.name
-        });
-    }
+    res.status(500).json({
+      error: err.message,
+      name: err.name,
+    });
+  }
 };
 
 exports.deletePatient = async (req, res) => {
@@ -74,4 +74,3 @@ exports.deletePatient = async (req, res) => {
     });
   }
 };
-

@@ -3,44 +3,43 @@ import axios from "axios";
 import PatientCard from "../../../components/patientCard";
 
 function ViewPatient() {
+  const [patients, setPatients] = useState([]);
 
-const [patients, setPatients] = useState([]);
+  useEffect(() => {
+    fetchPatients();
+  }, []);
 
-useEffect(() => {
-  fetchPatients();
-}, []);
-
-const fetchPatients = async () => {
-  try {
-    const response = await axios.get("/api/patient");
-    setPatients(response.data);
-    console.log(response.data);
-  } catch (err) {
-    console.error(err);
-    alert("Couldn't load patients.");
-  }
-};
+  const fetchPatients = async () => {
+    try {
+      const response = await axios.get("/api/patient");
+      setPatients(response.data);
+      console.log(response.data);
+    } catch (err) {
+      console.error(err);
+      alert("Couldn't load patients.");
+    }
+  };
 
   const [search, setSearch] = useState("");
 
   const filteredPatients = patients.filter(
     (patient) =>
       patient.name.toLowerCase().includes(search.toLowerCase()) ||
-      patient.id.toString().includes(search)
+      patient.id.toString().includes(search),
   );
 
   const handleSave = async (id, updatedHistory) => {
-  try {
-    await axios.put(`/api/patient/${id}`, {
+    try {
+      await axios.put(`/api/patient/${id}`, {
         medicalHistory: updatedHistory,
-    });
+      });
 
-    fetchPatients();
-  } catch (err) {
-    console.error(err);
-    alert("Couldn't update patient.");
-  }
-};
+      fetchPatients();
+    } catch (err) {
+      console.error(err);
+      alert("Couldn't update patient.");
+    }
+  };
 
   return (
     <div>
@@ -56,19 +55,18 @@ const fetchPatients = async () => {
       <br />
       <br />
       <div className="cardContainer">
-
-      {filteredPatients.length > 0 ? (
-        filteredPatients.map((patient) => (
-          <PatientCard
-            key={patient.id}
-            selected={patient}
-            role="edit"
-            onSave={handleSave}
-          />
-        ))
-      ) : (
-        <p>No patients found.</p>
-      )}
+        {filteredPatients.length > 0 ? (
+          filteredPatients.map((patient) => (
+            <PatientCard
+              key={patient.id}
+              selected={patient}
+              role="edit"
+              onSave={handleSave}
+            />
+          ))
+        ) : (
+          <p>No patients found.</p>
+        )}
       </div>
     </div>
   );

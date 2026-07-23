@@ -3,11 +3,9 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 function AsAdmin() {
-
   const [name, setName] = useState("");
   const [id, setId] = useState("");
   const [error, setError] = useState("");
-
 
   const navigate = useNavigate();
 
@@ -65,7 +63,6 @@ function AsAdmin() {
       <button disabled={!isValid} onClick={handleLogin}>
         Login
       </button>
-
     </div>
   );
 }

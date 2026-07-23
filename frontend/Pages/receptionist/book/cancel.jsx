@@ -3,28 +3,29 @@ import axios from "axios";
 import AppointmentCard from "../../../components/appointmentCard";
 
 function Cancel() {
-const [appointments, setAppointments] = useState([]);
+  const [appointments, setAppointments] = useState([]);
 
-const fetchAppointments = async () => {
-  try {
-    const response = await axios.get("/appointments");
-    setAppointments(response.data);
-  } catch (err) {
-    console.error(err);
-    alert("Couldn't load appointments.");
-  }
-};
+  const fetchAppointments = async () => {
+    try {
+      const response = await axios.get("/appointments");
+      setAppointments(response.data);
+    } catch (err) {
+      console.error(err);
+      alert("Couldn't load appointments.");
+    }
+  };
 
-useEffect(() => {
-  fetchAppointments();
-}, []);
+  useEffect(() => {
+    fetchAppointments();
+  }, []);
 
   const [appointmentSearch, setAppointmentSearch] = useState("");
   const [patientSearch, setPatientSearch] = useState("");
 
   const filteredAppointments = appointments.filter((appointment) => {
-    const matchesAppointment =
-      appointment.appointmentID.toString().includes(appointmentSearch);
+    const matchesAppointment = appointment.appointmentID
+      .toString()
+      .includes(appointmentSearch);
 
     const matchesPatient =
       appointment.patientName
@@ -58,13 +59,13 @@ useEffect(() => {
       <br />
       <br />
       <div className="cardContainer">
-      {filteredAppointments.length > 0 ? (
-        filteredAppointments.map((appointment) => (
-          <AppointmentCard
-            key={appointment.appointmentID}
-            selected={appointment}
-            role="cancel"
-            onCancel={async (id) => {
+        {filteredAppointments.length > 0 ? (
+          filteredAppointments.map((appointment) => (
+            <AppointmentCard
+              key={appointment.appointmentID}
+              selected={appointment}
+              role="cancel"
+              onCancel={async (id) => {
                 try {
                   await axios.put(`/appointments/${id}/cancel`);
 
@@ -76,11 +77,11 @@ useEffect(() => {
                   alert("Couldn't cancel appointment.");
                 }
               }}
-          />
-        ))
-      ) : (
-        <p>No appointments found.</p>
-      )}
+            />
+          ))
+        ) : (
+          <p>No appointments found.</p>
+        )}
       </div>
     </div>
   );

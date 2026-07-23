@@ -2,53 +2,48 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 function GeneralView() {
+  const [doctors, setDoctors] = useState([]);
+  const [receptionists, setReceptionists] = useState([]);
+  const [admins, setAdmins] = useState([]);
+  const [appointments, setAppointments] = useState([]);
 
-    const [doctors, setDoctors] = useState([]);
-const [receptionists, setReceptionists] = useState([]);
-const [admins, setAdmins] = useState([]);
-const [appointments, setAppointments] = useState([]);
+  const fetchData = async () => {
+    try {
+      const [doctorsRes, receptionistsRes, adminsRes, appointmentsRes] =
+        await Promise.all([
+          axios.get("/api/doctor"),
+          axios.get("/api/receptionist"),
+          axios.get("/api/admin"),
+          axios.get("/appointments"),
+        ]);
 
-const fetchData = async () => {
-  try {
-    const [
-      doctorsRes,
-      receptionistsRes,
-      adminsRes,
-      appointmentsRes,
-    ] = await Promise.all([
-      axios.get("/api/doctor"),
-      axios.get("/api/receptionist"),
-      axios.get("/api/admin"),
-      axios.get("/appointments"),
-    ]);
+      setDoctors(doctorsRes.data);
+      setReceptionists(receptionistsRes.data);
+      setAdmins(adminsRes.data);
+      setAppointments(appointmentsRes.data);
+    } catch (err) {
+      console.error(err);
+      alert("Couldn't load dashboard.");
+    }
+  };
 
-    setDoctors(doctorsRes.data);
-    setReceptionists(receptionistsRes.data);
-    setAdmins(adminsRes.data);
-    setAppointments(appointmentsRes.data);
-  } catch (err) {
-    console.error(err);
-    alert("Couldn't load dashboard.");
-  }
-};
+  useEffect(() => {
+    fetchData();
+  }, []);
 
-useEffect(() => {
-  fetchData();
-}, []);
+  const bookedAppointments = appointments.filter(
+    (appointment) => appointment.status === "Booked",
+  ).length;
 
-const bookedAppointments = appointments.filter(
-  (appointment) => appointment.status === "Booked"
-).length;
+  const completedAppointments = appointments.filter(
+    (appointment) => appointment.status === "Completed",
+  ).length;
 
-const completedAppointments = appointments.filter(
-  (appointment) => appointment.status === "Completed"
-).length;
+  const cancelledAppointments = appointments.filter(
+    (appointment) => appointment.status === "Cancelled",
+  ).length;
 
-const cancelledAppointments = appointments.filter(
-  (appointment) => appointment.status === "Cancelled"
-).length;
-
-return (
+  return (
     <div className="container">
       <h1>General Viewing</h1>
 
@@ -98,4 +93,4 @@ return (
   );
 }
 
-export default GeneralView
+export default GeneralView;

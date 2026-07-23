@@ -2,9 +2,9 @@ import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 function AdminDashboard() {
-    const { id } = useParams();
+  const { id } = useParams();
 
-    console.log(id);
+  console.log(id);
 }
 import axios from "axios";
 
@@ -20,13 +20,10 @@ function AsDoctor() {
 
   async function handleLogin() {
     try {
-      const response = await axios.post(
-        "/api/doctor/login",
-        {
-          name: name.trim().toLowerCase(),
-          id: Number(id),
-        }
-      );
+      const response = await axios.post("/api/doctor/login", {
+        name: name.trim().toLowerCase(),
+        id: Number(id),
+      });
 
       console.log(response.data);
 

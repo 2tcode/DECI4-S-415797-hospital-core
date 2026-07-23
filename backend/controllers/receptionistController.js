@@ -67,7 +67,6 @@ exports.deleteReceptionist = async (req, res) => {
   }
 };
 
-
 exports.createReceptionist = async (req, res) => {
   try {
     const receptionist = new Receptionist(req.body);

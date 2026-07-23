@@ -3,28 +3,28 @@ import axios from "axios";
 import PatientCard from "../../../components/patientCard";
 
 function DeletePatient() {
- const [patients, setPatients] = useState([]);
+  const [patients, setPatients] = useState([]);
 
-const fetchPatients = async () => {
-  try {
-    const response = await axios.get("/api/patient");
-    setPatients(response.data);
-  } catch (err) {
-    console.error(err);
-    alert("Couldn't load patients.");
-  }
-};
+  const fetchPatients = async () => {
+    try {
+      const response = await axios.get("/api/patient");
+      setPatients(response.data);
+    } catch (err) {
+      console.error(err);
+      alert("Couldn't load patients.");
+    }
+  };
 
-useEffect(() => {
-  fetchPatients();
-}, []);
+  useEffect(() => {
+    fetchPatients();
+  }, []);
 
   const [search, setSearch] = useState("");
 
   const filteredPatients = patients.filter(
     (patient) =>
       patient.name.toLowerCase().includes(search.toLowerCase()) ||
-      patient.id.toString().includes(search)
+      patient.id.toString().includes(search),
   );
 
   return (
@@ -41,30 +41,29 @@ useEffect(() => {
       <br />
       <br />
       <div className="cardContainer">
+        {filteredPatients.length > 0 ? (
+          filteredPatients.map((patient) => (
+            <PatientCard
+              key={patient.id}
+              selected={patient}
+              role="delete"
+              onDelete={async (id) => {
+                try {
+                  await axios.delete(`/api/patient/${id}`);
 
-      {filteredPatients.length > 0 ? (
-        filteredPatients.map((patient) => (
-          <PatientCard
-            key={patient.id}
-            selected={patient}
-            role="delete"
-            onDelete={async (id) => {
-              try {
-                await axios.delete(`/api/patient/${id}`);
+                  alert("Patient deleted successfully!");
 
-                alert("Patient deleted successfully!");
-
-                fetchPatients();
-              } catch (err) {
-                console.error(err);
-                alert("Couldn't delete patient.");
-              }
-            }}
-          />
-        ))
-      ) : (
-        <p>No patients found.</p>
-      )}
+                  fetchPatients();
+                } catch (err) {
+                  console.error(err);
+                  alert("Couldn't delete patient.");
+                }
+              }}
+            />
+          ))
+        ) : (
+          <p>No patients found.</p>
+        )}
       </div>
     </div>
   );

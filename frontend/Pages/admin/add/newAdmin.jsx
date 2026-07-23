@@ -10,26 +10,26 @@ function NewAdmin() {
     setName(value);
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  const admin = {
-    name,
-    id: Number(id),
+    const admin = {
+      name,
+      id: Number(id),
+    };
+
+    try {
+      await axios.post("/api/admin", admin);
+
+      alert("Admin added successfully!");
+
+      setName("");
+      setId("");
+    } catch (err) {
+      console.error(err);
+      alert("Couldn't add admin.");
+    }
   };
-
-  try {
-    await axios.post("/api/admin", admin);
-
-    alert("Admin added successfully!");
-
-    setName("");
-    setId("");
-  } catch (err) {
-    console.error(err);
-    alert("Couldn't add admin.");
-  }
-};
 
   return (
     <div>
@@ -66,9 +66,7 @@ const handleSubmit = async (e) => {
 
         <br />
 
-        <button type="submit">
-          Add Admin
-        </button>
+        <button type="submit">Add Admin</button>
       </form>
     </div>
   );

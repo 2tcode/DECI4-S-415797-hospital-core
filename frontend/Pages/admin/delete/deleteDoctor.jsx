@@ -3,27 +3,28 @@ import axios from "axios";
 import DoctorCard from "../../../components/doctorCard";
 
 function DeleteDoctor() {
-const [doctors, setDoctors] = useState([]);
+  const [doctors, setDoctors] = useState([]);
 
-const fetchDoctors = async () => {
-  try {
-    const response = await axios.get("/api/doctor");
-    setDoctors(response.data);
-  } catch (err) {
-    console.error(err);
-    alert("Couldn't load doctors.");
-  }
-};
+  const fetchDoctors = async () => {
+    try {
+      const response = await axios.get("/api/doctor");
+      setDoctors(response.data);
+    } catch (err) {
+      console.error(err);
+      alert("Couldn't load doctors.");
+    }
+  };
 
-useEffect(() => {
-  fetchDoctors();
-}, []);
+  useEffect(() => {
+    fetchDoctors();
+  }, []);
 
   const [search, setSearch] = useState("");
 
-  const filteredDoctors = doctors.filter((doctor) =>
-    doctor.name.toLowerCase().includes(search.toLowerCase()) ||
-    doctor.id.includes(search)
+  const filteredDoctors = doctors.filter(
+    (doctor) =>
+      doctor.name.toLowerCase().includes(search.toLowerCase()) ||
+      doctor.id.includes(search),
   );
 
   return (
@@ -41,36 +42,35 @@ useEffect(() => {
       <br />
 
       <div className="cardContainer">
+        {filteredDoctors.length > 0 ? (
+          filteredDoctors.map((doctor) => (
+            <DoctorCard
+              key={doctor.id}
+              selected={doctor}
+              role="delete"
+              onDelete={async (id) => {
+                const confirmed = window.confirm(
+                  "Are you sure you want to delete this doctor?",
+                );
 
-      {filteredDoctors.length > 0 ? (
-        filteredDoctors.map((doctor) => (
-          <DoctorCard
-            key={doctor.id}
-            selected={doctor}
-            role="delete"
-            onDelete={async (id) => {
-  const confirmed = window.confirm(
-    "Are you sure you want to delete this doctor?"
-  );
+                if (!confirmed) return;
 
-  if (!confirmed) return;
+                try {
+                  await axios.delete(`/api/doctor/${id}`);
 
-  try {
-    await axios.delete(`/api/doctor/${id}`);
+                  alert("Doctor deleted successfully!");
 
-    alert("Doctor deleted successfully!");
-
-    fetchDoctors();
-  } catch (err) {
-    console.error(err);
-    alert("Couldn't delete doctor.");
-  }
-}}
-          />
-        ))
-      ) : (
-        <p>No doctors found.</p>
-      )}
+                  fetchDoctors();
+                } catch (err) {
+                  console.error(err);
+                  alert("Couldn't delete doctor.");
+                }
+              }}
+            />
+          ))
+        ) : (
+          <p>No doctors found.</p>
+        )}
       </div>
     </div>
   );

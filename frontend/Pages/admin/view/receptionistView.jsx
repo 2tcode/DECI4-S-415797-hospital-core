@@ -1,30 +1,30 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import ReceptionistCard from "../../../components/receptionisCard";
+import ReceptionistCard from "../../../components/receptionistCard";
 
 function ReceptionistView() {
-const [receptionists, setReceptionists] = useState([]);
+  const [receptionists, setReceptionists] = useState([]);
 
-const fetchReceptionists = async () => {
-  try {
-    const response = await axios.get("/api/receptionist");
-    setReceptionists(response.data);
-  } catch (err) {
-    console.error(err);
-    alert("Couldn't load receptionists.");
-  }
-};
+  const fetchReceptionists = async () => {
+    try {
+      const response = await axios.get("/api/receptionist");
+      setReceptionists(response.data);
+    } catch (err) {
+      console.error(err);
+      alert("Couldn't load receptionists.");
+    }
+  };
 
-useEffect(() => {
-  fetchReceptionists();
-}, []);
+  useEffect(() => {
+    fetchReceptionists();
+  }, []);
 
   const [search, setSearch] = useState("");
 
   const filteredReceptionists = receptionists.filter(
     (receptionist) =>
       receptionist.name.toLowerCase().includes(search.toLowerCase()) ||
-      receptionist.id.toString().includes(search)
+      receptionist.id.toString().includes(search),
   );
 
   return (
@@ -41,17 +41,17 @@ useEffect(() => {
       <br />
       <br />
       <div className="cardContainer">
-      {filteredReceptionists.length > 0 ? (
-        filteredReceptionists.map((receptionist) => (
-          <ReceptionistCard
-            key={receptionist.id}
-            selected={receptionist}
-            role="view"
-          />
-        ))
-      ) : (
-        <p>No receptionists found.</p>
-      )}
+        {filteredReceptionists.length > 0 ? (
+          filteredReceptionists.map((receptionist) => (
+            <ReceptionistCard
+              key={receptionist.id}
+              selected={receptionist}
+              role="view"
+            />
+          ))
+        ) : (
+          <p>No receptionists found.</p>
+        )}
       </div>
     </div>
   );

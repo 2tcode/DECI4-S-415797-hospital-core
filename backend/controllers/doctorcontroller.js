@@ -19,7 +19,6 @@ exports.login = async (req, res) => {
     return res.json({
       success: true,
     });
-
   } catch (err) {
     console.error(err);
     res.status(500).json({
@@ -30,13 +29,13 @@ exports.login = async (req, res) => {
 };
 
 exports.getDoctors = async (req, res) => {
-    try {
-        const doctors = await Doctor.find();
-        res.json(doctors);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: err.message });
-    }
+  try {
+    const doctors = await Doctor.find();
+    res.json(doctors);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
 };
 
 exports.deleteDoctor = async (req, res) => {

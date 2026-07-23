@@ -16,33 +16,33 @@ const seedReceptionists = require("./receptionistSeed");
 const seedAppointments = require("./appointmentSeed");
 
 async function seed() {
-    // Backend database
-    await connectBackendDB();
+  // Backend database
+  await connectBackendDB();
 
-    await Admin.deleteMany({});
-    await Doctor.deleteMany({});
-    await Patient.deleteMany({});
-    await Receptionist.deleteMany({});
+  await Admin.deleteMany({});
+  await Doctor.deleteMany({});
+  await Patient.deleteMany({});
+  await Receptionist.deleteMany({});
 
-    await seedAdmins();
-    await seedDoctors();
-    await seedPatients();
-    await seedReceptionists();
+  await seedAdmins();
+  await seedDoctors();
+  await seedPatients();
+  await seedReceptionists();
 
-    await mongoose.disconnect();
+  await mongoose.disconnect();
 
-    // Appointment database
-    await connectAppointmentDB();
+  // Appointment database
+  await connectAppointmentDB();
 
-    await Appointment.deleteMany({});
-    await seedAppointments();
+  await Appointment.deleteMany({});
+  await seedAppointments();
 
-    await mongoose.disconnect();
+  await mongoose.disconnect();
 
-    console.log("Database seeded successfully!");
+  console.log("Database seeded successfully!");
 }
 
-seed().catch(err => {
-    console.error(err);
-    process.exit(1);
+seed().catch((err) => {
+  console.error(err);
+  process.exit(1);
 });

@@ -25,7 +25,7 @@ function AddNew() {
     setHistory(history.filter((_, i) => i !== index));
   };
 
-  const handleSubmit = async() => {
+  const handleSubmit = async () => {
     const patient = {
       id: Number(id),
       name,
@@ -34,21 +34,21 @@ function AddNew() {
       medicalHistory: history,
     };
 
-try {
-  await axios.post("/api/patient", patient);
+    try {
+      await axios.post("/api/patient", patient);
 
-  alert("Patient added successfully!");
+      alert("Patient added successfully!");
 
-  setId("");
-  setName("");
-  setAge("");
-  setGender("");
-  setHistory([]);
-  setNewHistory("");
-} catch (err) {
-  console.error(err);
-  alert("Couldn't add patient.");
-}
+      setId("");
+      setName("");
+      setAge("");
+      setGender("");
+      setHistory([]);
+      setNewHistory("");
+    } catch (err) {
+      console.error(err);
+      alert("Couldn't add patient.");
+    }
 
     setId("");
     setName("");
@@ -96,10 +96,7 @@ try {
       <p>
         <strong>Gender:</strong>
       </p>
-      <select
-        value={gender}
-        onChange={(e) => setGender(e.target.value)}
-      >
+      <select value={gender} onChange={(e) => setGender(e.target.value)}>
         <option value="">Select Gender</option>
         <option value="Male">Male</option>
         <option value="Female">Female</option>
@@ -116,26 +113,19 @@ try {
         placeholder="Enter a medical condition"
       />
 
-      <button onClick={addHistory}>
-        Add History
-      </button>
+      <button onClick={addHistory}>Add History</button>
 
       <ul>
         {history.map((item, index) => (
           <li key={index}>
-            {item}{" "}
-            <button onClick={() => removeHistory(index)}>
-              Remove
-            </button>
+            {item} <button onClick={() => removeHistory(index)}>Remove</button>
           </li>
         ))}
       </ul>
 
       <br />
 
-      <button onClick={handleSubmit}>
-        Add Patient
-      </button>
+      <button onClick={handleSubmit}>Add Patient</button>
     </div>
   );
 }

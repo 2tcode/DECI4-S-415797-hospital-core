@@ -3,21 +3,21 @@ import axios from "axios";
 import AppointmentCard from "../../../components/appointmentCard";
 
 function AppointmentView() {
-const [appointments, setAppointments] = useState([]);
+  const [appointments, setAppointments] = useState([]);
 
-const fetchAppointments = async () => {
-  try {
-    const response = await axios.get("/appointments");
-    setAppointments(response.data);
-  } catch (err) {
-    console.error(err);
-    alert("Couldn't load appointments.");
-  }
-};
+  const fetchAppointments = async () => {
+    try {
+      const response = await axios.get("/appointments");
+      setAppointments(response.data);
+    } catch (err) {
+      console.error(err);
+      alert("Couldn't load appointments.");
+    }
+  };
 
-useEffect(() => {
-  fetchAppointments();
-}, []);
+  useEffect(() => {
+    fetchAppointments();
+  }, []);
 
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -45,7 +45,6 @@ useEffect(() => {
         onChange={(e) => setSearch(e.target.value)}
       />
 
-
       {"  "}
 
       <select
@@ -61,18 +60,17 @@ useEffect(() => {
       <br />
       <br />
       <div className="cardContainer">
-
-      {filteredAppointments.length > 0 ? (
-        filteredAppointments.map((appointment) => (
-          <AppointmentCard
-            key={appointment.appointmentID}
-            selected={appointment}
-            role="view"
-          />
-        ))
-      ) : (
-        <p>No appointments found.</p>
-      )}
+        {filteredAppointments.length > 0 ? (
+          filteredAppointments.map((appointment) => (
+            <AppointmentCard
+              key={appointment.appointmentID}
+              selected={appointment}
+              role="view"
+            />
+          ))
+        ) : (
+          <p>No appointments found.</p>
+        )}
       </div>
     </div>
   );

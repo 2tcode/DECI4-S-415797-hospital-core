@@ -5,8 +5,8 @@ exports.login = async (req, res) => {
     const { name, id } = req.body;
 
     const admin = await Admin.findOne({
-    name,
-    id,
+      name,
+      id,
     });
 
     if (!admin) {
@@ -19,7 +19,6 @@ exports.login = async (req, res) => {
       success: true,
       admin,
     });
-
   } catch (err) {
     res.status(500).json({
       success: false,
