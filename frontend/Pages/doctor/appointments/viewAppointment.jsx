@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, } from "react";
+import { useParams } from "react-router-dom";
 import axios from "axios";
 import AppointmentCard from "../../../components/appointmentCard";
 
 function ViewAppointment() {
+  const { id } = useParams();
   const [appointments, setAppointments] = useState([]);
   const [patientSearch, setPatientSearch] = useState("");
   const [appointmentSearch, setAppointmentSearch] = useState("");
@@ -13,7 +15,7 @@ function ViewAppointment() {
 
   const fetchAppointments = async () => {
     try {
-      const response = await axios.get("/appointments");
+      const response = await axios.get(`/appointments/doctor/${id}`);
       setAppointments(response.data);
     } catch (err) {
       console.error(err);

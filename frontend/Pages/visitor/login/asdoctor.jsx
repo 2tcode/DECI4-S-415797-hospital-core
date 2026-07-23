@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+
+function AdminDashboard() {
+    const { id } = useParams();
+
+    console.log(id);
+}
 import axios from "axios";
 
 function AsDoctor() {
@@ -25,7 +31,7 @@ function AsDoctor() {
       console.log(response.data);
 
       if (response.data.success) {
-        navigate("/doctor/dashboard");
+        navigate(`/doctor/dashboard/${id}`);
       } else {
         alert("Invalid name or ID.");
       }

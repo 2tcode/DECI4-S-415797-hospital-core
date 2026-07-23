@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import AppointmentCard from "../../../components/appointmentCard";
+import { useParams } from "react-router-dom";
+
 
 function AppointmentHistory() {
+  const { id } = useParams();
   const [appointments, setAppointments] = useState([]);
 
   useEffect(() => {
@@ -10,14 +13,15 @@ function AppointmentHistory() {
 }, []);
 
 const fetchAppointments = async () => {
-    try {
-        const response = await axios.get("/appointments");
-        setAppointments(response.data);
-    } catch (err) {
-        console.error(err);
-        alert("Couldn't load appointments.");
-    }
+  try {
+    const response = await axios.get(`/appointments/doctor/${id}`);
+    setAppointments(response.data);
+  } catch (err) {
+    console.error(err);
+    alert("Couldn't load appointments.");
+  }
 };
+
 
   const [patientSearch, setPatientSearch] = useState("");
   const [appointmentSearch, setAppointmentSearch] = useState("");

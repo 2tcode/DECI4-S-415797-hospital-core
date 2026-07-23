@@ -59,3 +59,19 @@ exports.cancelAppointment = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+exports.getDoctorAppointments = async (req, res) => {
+  try {
+    const appointments = await Appointment.find({
+      doctorID: Number(req.params.id),
+    });
+
+    res.json(appointments);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      message: "Failed to fetch appointments",
+      error: err.message,
+    });
+  }
+};

@@ -10,4 +10,6 @@ router.post("/", controller.createAppointment);
 
 router.put("/:id/cancel", controller.cancelAppointment);
 
+router.get("/doctor/:id", controller.getDoctorAppointments);
+
 module.exports = router;
