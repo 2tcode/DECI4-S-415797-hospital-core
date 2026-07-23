@@ -1,4 +1,5 @@
 import { useState } from "react";
+import axios from "axios";
 
 function AddNew() {
   const [id, setId] = useState("");
@@ -24,19 +25,31 @@ function AddNew() {
     setHistory(history.filter((_, i) => i !== index));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async() => {
     const patient = {
-      id,
+      id: Number(id),
       name,
-      age,
+      age: Number(age),
       gender,
       medicalHistory: history,
     };
 
-    console.log("New Patient:");
-    console.log(patient);
+try {
+  await axios.post("/api/patient", patient);
 
-    // Clear form
+  alert("Patient added successfully!");
+
+  setId("");
+  setName("");
+  setAge("");
+  setGender("");
+  setHistory([]);
+  setNewHistory("");
+} catch (err) {
+  console.error(err);
+  alert("Couldn't add patient.");
+}
+
     setId("");
     setName("");
     setAge("");

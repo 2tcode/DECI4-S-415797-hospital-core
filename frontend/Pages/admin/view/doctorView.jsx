@@ -1,24 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import DoctorCard from "../../../components/doctorCard";
 
 function DoctorView() {
-  const doctors = [
-    {
-      id: 123,
-      name: "Ahmed Mohamed",
-      specialization: "Cardiology",
-    },
-    {
-      id: 124,
-      name: "Sarah Ali",
-      specialization: "Neurology",
-    },
-    {
-      id: 125,
-      name: "Omar Hassan",
-      specialization: "Pediatrics",
-    },
-  ];
+const [doctors, setDoctors] = useState([]);
+
+const fetchDoctors = async () => {
+  try {
+    const response = await axios.get("/api/doctor");
+    setDoctors(response.data);
+  } catch (err) {
+    console.error(err);
+    alert("Couldn't load doctors.");
+  }
+};
+
+useEffect(() => {
+  fetchDoctors();
+}, []);
 
   const [search, setSearch] = useState("");
 

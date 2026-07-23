@@ -6,13 +6,13 @@ async function seedAdmins() {
 
     for (let i = 0; i < 4; i++) {
         admins.push({
-            name: faker.person.fullName(),
+            name: faker.person.fullName().toLowerCase(),
             id: faker.number.int({ min: 100000, max: 999999 })
         });
     }
 
     admins.push({
-        name: "Ali Ali",
+        name: "ali ali",
         id: 999999
     });
 

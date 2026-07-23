@@ -1,64 +1,53 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import DoctorCard from "../../../components/doctorCard";
 import PatientCard from "../../../components/patientCard";
 
 function Book() {
-  const doctors = [
-    {
-      id: 123,
-      name: "Ahmed Mohamed",
-      specialization: "Cardiology",
-      workDays: ["Monday", "Tuesday", "Thursday"],
-      startTime: "09:00",
-      endTime: "17:00",
-    },
-    {
-      id: 124,
-      name: "Sarah Ali",
-      specialization: "Neurology",
-      workDays: ["Sunday", "Monday", "Wednesday"],
-      startTime: "10:00",
-      endTime: "18:00",
-    },
-    {
-      id: 125,
-      name: "Omar Hassan",
-      specialization: "Pediatrics",
-      workDays: ["Tuesday", "Wednesday", "Thursday"],
-      startTime: "08:00",
-      endTime: "02:00",
-    },
-  ];
+ const [doctors, setDoctors] = useState([]);
+const [patients, setPatients] = useState([]);
+const [appointments, setAppointments] = useState([]);
 
-  const patients = [
-    {
-      id: 301,
-      name: "Ahmed Hassan",
-      age: 35,
-      gender: "Male",
-      medicalHistory: [
-        "Diabetes",
-        "High Blood Pressure",
-        "Appendectomy (2020)",
-      ],
-    },
-    {
-      id: 302,
-      name: "Mohamed Hassan",
-      age: 35,
-      gender: "Male",
-      medicalHistory: [],
-    },
-  ];
+const fetchDoctors = async () => {
+  try {
+    const response = await axios.get("/api/doctor");
+    setDoctors(response.data);
+  } catch (err) {
+    console.error(err);
+    alert("Couldn't load doctors.");
+  }
+};
 
-  const appointments = [
-    { id: 501 },
-    { id: 502 },
-    { id: 503 },
-  ];
+const fetchPatients = async () => {
+  try {
+    const response = await axios.get("/api/patient");
+    setPatients(response.data);
+  } catch (err) {
+    console.error(err);
+    alert("Couldn't load patients.");
+  }
+};
 
-  const nextAppointmentId =
-    Math.max(...appointments.map((appointment) => appointment.id)) + 1;
+const fetchAppointments = async () => {
+  try {
+    const response = await axios.get("/appointments");
+    setAppointments(response.data);
+  } catch (err) {
+    console.error(err);
+    alert("Couldn't load appointments.");
+  }
+};
+
+useEffect(() => {
+  fetchDoctors();
+  fetchPatients();
+  fetchAppointments();
+}, []);
+
+
+const [nextAppointmentId] = useState(
+  Math.floor(Math.random() * 900000) + 100000
+);
 
   const [doctorSearch, setDoctorSearch] = useState("");
   const [patientSearch, setPatientSearch] = useState("");
@@ -96,8 +85,8 @@ function Book() {
 
     if (selectedTime) {
       matchesTime =
-        selectedTime >= doctor.startTime &&
-        selectedTime < doctor.endTime;
+        selectedTime >= doctor.workHours.from &&
+        selectedTime < doctor.workHours.to
     }
 
     return matchesSearch && matchesDate && matchesTime;
@@ -110,21 +99,46 @@ function Book() {
     );
   });
 
-  const handleBookAppointment = () => {
-    const newAppointment = {
-      id: nextAppointmentId,
-      doctorId: selectedDoctor.id,
-      doctorName: selectedDoctor.name,
-      specialization: selectedDoctor.specialization,
-      patientId: selectedPatient.id,
-      patientName: selectedPatient.name,
-      date: selectedDate,
-      startTime: selectedTime,
-    };
 
-    console.log("Appointment Booked!");
-    console.log(newAppointment);
+const handleBookAppointment = async () => {
+  const [hours, minutes] = selectedTime.split(":").map(Number);
+
+  const end = new Date();
+  end.setHours(hours, minutes + 30);
+
+  const endTime = end.toTimeString().slice(0, 5);
+
+
+  const newAppointment = {
+    appointmentID: nextAppointmentId,
+    doctorID: selectedDoctor.id,
+    doctorName: selectedDoctor.name,
+    patientID: selectedPatient.id,
+    patientName: selectedPatient.name,
+    appointmentDate: selectedDate,
+    appointmentTime: {
+      from: selectedTime,
+      to: endTime,
+    },
+    status: "Booked",
   };
+
+  try {
+    await axios.post("/appointments", newAppointment);
+
+    alert("Appointment booked successfully!");
+
+    fetchAppointments();
+
+    setSelectedDoctor(null);
+    setSelectedPatient(null);
+    setSelectedDate("");
+    setSelectedTime("");
+  } catch (err) {
+    console.error(err);
+    alert("Couldn't book appointment.");
+  }
+};
 
   return (
     <div>

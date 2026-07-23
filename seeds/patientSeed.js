@@ -24,9 +24,9 @@ function getRandomDisease() {
     const history = [];
 
     while (history.length < numberOfDiseases) {
-        const disease = faker.helpers.arrayElement(diseases);
-        if (!history.includes(disease)) {
-            history.push(disease);
+        const disease = faker.helpers.arrayElement(diseases).toLowerCase();
+        if (!history.includes(disease.toLowerCase())) {
+            history.push(disease.toLowerCase());
         }
     }
 
@@ -47,7 +47,7 @@ async function seedPatients() {
         usedIDs.add(id);
 
         patients.push({
-            name: faker.person.fullName(),
+            name: faker.person.fullName().toLowerCase(),
             age: faker.number.int({ min: 18, max: 90 }),
             gender: faker.helpers.arrayElement(["Male", "Female"]),
             id,

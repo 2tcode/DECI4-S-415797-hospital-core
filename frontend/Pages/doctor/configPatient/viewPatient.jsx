@@ -1,36 +1,25 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import PatientCard from "../../../components/patientCard";
 
 function ViewPatient() {
-  const patients = [
-    {
-      id: 301,
-      name: "Ahmed Hassan",
-      age: 35,
-      gender: "Male",
-      medicalHistory: [
-        "Diabetes",
-        "High Blood Pressure",
-        "Appendectomy (2020)",
-      ],
-    },
-    {
-      id: 302,
-      name: "Mohamed Hassan",
-      age: 35,
-      gender: "Male",
-      medicalHistory: [],
-    },
-    {
-      id: 303,
-      name: "Sara Ali",
-      age: 28,
-      gender: "Female",
-      medicalHistory: [
-        "Asthma",
-      ],
-    },
-  ];
+
+const [patients, setPatients] = useState([]);
+
+useEffect(() => {
+  fetchPatients();
+}, []);
+
+const fetchPatients = async () => {
+  try {
+    const response = await axios.get("/api/patient");
+    setPatients(response.data);
+    console.log(response.data);
+  } catch (err) {
+    console.error(err);
+    alert("Couldn't load patients.");
+  }
+};
 
   const [search, setSearch] = useState("");
 
@@ -39,6 +28,19 @@ function ViewPatient() {
       patient.name.toLowerCase().includes(search.toLowerCase()) ||
       patient.id.toString().includes(search)
   );
+
+  const handleSave = async (id, updatedHistory) => {
+  try {
+    await axios.put(`/api/patient/${id}`, {
+        medicalHistory: updatedHistory,
+    });
+
+    fetchPatients();
+  } catch (err) {
+    console.error(err);
+    alert("Couldn't update patient.");
+  }
+};
 
   return (
     <div>
@@ -61,10 +63,7 @@ function ViewPatient() {
             key={patient.id}
             selected={patient}
             role="edit"
-            onSave={(id, updatedHistory) => {
-              console.log(id);
-              console.log(updatedHistory);
-            }}
+            onSave={handleSave}
           />
         ))
       ) : (

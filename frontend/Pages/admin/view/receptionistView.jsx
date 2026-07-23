@@ -1,21 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import ReceptionistCard from "../../../components/receptionisCard";
 
 function ReceptionistView() {
-  const receptionists = [
-    {
-      id: 101,
-      name: "Sarah Ahmed",
-    },
-    {
-      id: 102,
-      name: "Mohamed Ali",
-    },
-    {
-      id: 103,
-      name: "Nour Hassan",
-    },
-  ];
+const [receptionists, setReceptionists] = useState([]);
+
+const fetchReceptionists = async () => {
+  try {
+    const response = await axios.get("/api/receptionist");
+    setReceptionists(response.data);
+  } catch (err) {
+    console.error(err);
+    alert("Couldn't load receptionists.");
+  }
+};
+
+useEffect(() => {
+  fetchReceptionists();
+}, []);
 
   const [search, setSearch] = useState("");
 

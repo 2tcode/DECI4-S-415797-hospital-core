@@ -5,7 +5,6 @@ async function seedReceptionists() {
     const receptionists = [];
     const usedIDs = new Set();
 
-    // 19 random receptionists
     for (let i = 0; i < 19; i++) {
 
         let id;
@@ -16,13 +15,13 @@ async function seedReceptionists() {
         usedIDs.add(id);
 
         receptionists.push({
-            name: faker.person.fullName(),
+            name: faker.person.fullName().toLowerCase(),
             id
         });
     }
 
     receptionists.push({
-        name: "Emily Carter",
+        name: "emily carter",
         id: 100001
     });
 

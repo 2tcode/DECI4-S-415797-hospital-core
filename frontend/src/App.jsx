@@ -35,7 +35,6 @@ import DeletePatient from "../pages/receptionist/patientInfo/deletePatient";
 import AsAdmin from "../pages/visitor/login/asAdmin";
 import AsDoctor from "../pages/visitor/login/asDoctor";
 import AsReceptionist from "../pages/visitor/login/asReceptionist";
-import HappyBirthday from "../happyBirthday";
 
 
 function App() {
@@ -76,7 +75,6 @@ function App() {
           <Route path="patients/delete" element={<DeletePatient />}/>
         </Route>
 
-        <Route path="/sana/helwa" element={<HappyBirthday/>}/>
       </Routes>
     </>
   );

@@ -15,7 +15,6 @@ async function seedAppointments() {
         const patient = faker.helpers.arrayElement(patients);
         const doctor = faker.helpers.arrayElement(doctors);
 
-        // Generate a unique 6-digit appointment ID
         let appointmentID;
         do {
             appointmentID = faker.number.int({ min: 100000, max: 999999 });

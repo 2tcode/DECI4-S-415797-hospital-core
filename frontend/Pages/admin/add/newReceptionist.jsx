@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 function NewReceptionist() {
   const [name, setName] = useState("");
@@ -10,19 +11,26 @@ function NewReceptionist() {
     setName(value);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    console.log({
-      name,
-      id,
-    });
+  const receptionist = {
+    name,
+    id: Number(id),
+  };
 
-    // Later you'll send this to your backend.
+  try {
+    await axios.post("/api/receptionist", receptionist);
+
+    alert("Receptionist added successfully!");
 
     setName("");
     setId("");
-  };
+  } catch (err) {
+    console.error(err);
+    alert("Couldn't add receptionist.");
+  }
+};
 
   return (
     <div>

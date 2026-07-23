@@ -1,26 +1,35 @@
 import { useState } from "react";
+import axios from "axios";
 
 function NewAdmin() {
   const [name, setName] = useState("");
   const [id, setId] = useState("");
 
   const handleNameChange = (e) => {
-    // Allow letters and spaces only
     const value = e.target.value.replace(/[^a-zA-Z\s]/g, "");
     setName(value);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    console.log({
-      name,
-      id,
-    });
+  const admin = {
+    name,
+    id: Number(id),
+  };
+
+  try {
+    await axios.post("/api/admin", admin);
+
+    alert("Admin added successfully!");
 
     setName("");
     setId("");
-  };
+  } catch (err) {
+    console.error(err);
+    alert("Couldn't add admin.");
+  }
+};
 
   return (
     <div>

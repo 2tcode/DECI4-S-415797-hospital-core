@@ -1,16 +1,34 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function AsReceptionist() {
   const [name, setName] = useState("");
   const [id, setId] = useState("");
 
+  const navigate = useNavigate();
+
   const isNameValid = /^[A-Za-z\s]+$/.test(name.trim());
-
-
   const isIdValid = id.trim() !== "" && !isNaN(id);
-
   const isValid = isNameValid && isIdValid;
+
+  async function handleLogin() {
+    try {
+      const response = await axios.post("/api/receptionist/login", {
+        name: name.trim().toLowerCase(),
+        id: Number(id),
+      });
+
+      if (response.data.success) {
+        navigate("/receptionist/dashboard");
+      } else {
+        alert("Invalid name or ID.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Couldn't connect to the server.");
+    }
+  }
 
   return (
     <div>
@@ -40,13 +58,9 @@ function AsReceptionist() {
 
       <br />
 
-      {isValid ? (
-        <Link to="/receptionist/dashboard">
-          <button>Login</button>
-        </Link>
-      ) : (
-        <button disabled>Login</button>
-      )}
+      <button disabled={!isValid} onClick={handleLogin}>
+        Login
+      </button>
     </div>
   );
 }

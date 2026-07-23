@@ -14,7 +14,7 @@ async function seedDoctors() {
     const doctors = [];
     const usedIDs = new Set();
 
-    // 19 random doctors
+
     for (let i = 0; i < 19; i++) {
 
         let id;
@@ -40,9 +40,9 @@ async function seedDoctors() {
         const endHour = faker.number.int({ min: 15, max: 18 });
 
         doctors.push({
-            name: faker.person.fullName(),
+            name: faker.person.fullName().toLowerCase(),
             id,
-            specialization: faker.helpers.arrayElement(departments),
+            specialization: faker.helpers.arrayElement(departments).toLowerCase(),
             workDays,
             workHours: {
                 from: `${String(startHour).padStart(2, "0")}:00`,
@@ -52,9 +52,9 @@ async function seedDoctors() {
     }
 
     doctors.push({
-        name: "Ahmed Mohammed",
+        name: "ahmed mohammed",
         id: 100001,
-        specialization: "General",
+        specialization: "general",
         workDays: [
             "Sunday",
             "Monday",

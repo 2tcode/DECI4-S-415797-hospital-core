@@ -5,7 +5,7 @@ function AppointmentCard({ selected, role, onCancel, onComplete }) {
     );
 
     if (confirmed) {
-      onCancel(selected.id);
+      onCancel(selected.appointmentID);
     }
   };
 
@@ -15,15 +15,15 @@ function AppointmentCard({ selected, role, onCancel, onComplete }) {
     );
 
     if (confirmed) {
-      onComplete(selected.id);
+      onComplete(selected.appointmentID);
     }
   };
 
-  if (role === "history" && selected.status !== "completed") {
+  if (role === "history" && selected.status !== "Completed") {
     return null;
   }
 
-  if (role === "cancel" && selected.status.toLowerCase() !== "booked") {
+  if (role === "cancel" && selected.status !== "Booked") {
     return null;
   }
 
@@ -32,36 +32,36 @@ function AppointmentCard({ selected, role, onCancel, onComplete }) {
       <h2>Appointment</h2>
 
       <p>
-        <strong>Appointment ID:</strong> {selected.id}
+        <strong>Appointment ID:</strong> {selected.appointmentID}
       </p>
 
       <p>
-        <strong>Patient:</strong> {selected.patientName} (ID: {selected.patientId})
+        <strong>Patient:</strong> {selected.patientName} (ID: {selected.patientID})
       </p>
 
       <p>
-        <strong>Doctor:</strong> Dr. {selected.doctorName} (ID: {selected.doctorId})
+        <strong>Doctor:</strong> Dr. {selected.doctorName} (ID: {selected.doctorID})
       </p>
 
       <p>
-        <strong>Date:</strong> {selected.date}
+        <strong>Date:</strong> {selected.appointmentDate}
       </p>
 
       <p>
-        <strong>Time:</strong> {selected.startTime} - {selected.endTime}
+        <strong>Time:</strong> {selected.appointmentTime.from} - {selected.appointmentTime.to}
       </p>
 
       <p>
         <strong>Status:</strong> {selected.status}
       </p>
 
-      {role === "cancel" && selected.status === "booked" && (
+      {role === "cancel" && selected.status === "Booked" && (
         <button onClick={handleCancel} className="deleteButton">
           Cancel Appointment
         </button>
       )}
 
-      {role === "completed" && selected.status === "booked" && (
+      {role === "completed" && selected.status === "Booked" && (
         <button onClick={handleComplete} className="completeButton">
           Mark as Completed
         </button>

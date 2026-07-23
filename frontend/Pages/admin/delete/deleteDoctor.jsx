@@ -1,24 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import DoctorCard from "../../../components/doctorCard";
 
 function DeleteDoctor() {
-  const doctors = [
-    {
-      id: "123",
-      name: "Ahmed Mohamed",
-      specialization: "Cardiology",
-    },
-    {
-      id: "124",
-      name: "Sarah Ali",
-      specialization: "Neurology",
-    },
-    {
-      id: "125",
-      name: "Omar Hassan",
-      specialization: "Pediatrics",
-    },
-  ];
+const [doctors, setDoctors] = useState([]);
+
+const fetchDoctors = async () => {
+  try {
+    const response = await axios.get("/api/doctor");
+    setDoctors(response.data);
+  } catch (err) {
+    console.error(err);
+    alert("Couldn't load doctors.");
+  }
+};
+
+useEffect(() => {
+  fetchDoctors();
+}, []);
 
   const [search, setSearch] = useState("");
 
@@ -49,7 +48,24 @@ function DeleteDoctor() {
             key={doctor.id}
             selected={doctor}
             role="delete"
-            onDelete={(id) => console.log("Delete doctor:", id)}
+            onDelete={async (id) => {
+  const confirmed = window.confirm(
+    "Are you sure you want to delete this doctor?"
+  );
+
+  if (!confirmed) return;
+
+  try {
+    await axios.delete(`/api/doctor/${id}`);
+
+    alert("Doctor deleted successfully!");
+
+    fetchDoctors();
+  } catch (err) {
+    console.error(err);
+    alert("Couldn't delete doctor.");
+  }
+}}
           />
         ))
       ) : (

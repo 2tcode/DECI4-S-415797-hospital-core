@@ -1,21 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import ReceptionistCard from "../../../components/receptionisCard";
 
 function DeleteReceptionist() {
-  const receptionists = [
-    {
-      id: 101,
-      name: "Sarah Ahmed",
-    },
-    {
-      id: 102,
-      name: "Mohamed Ali",
-    },
-    {
-      id: 103,
-      name: "Nour Hassan",
-    },
-  ];
+const [receptionists, setReceptionists] = useState([]);
+
+const fetchReceptionists = async () => {
+  try {
+    const response = await axios.get("/api/receptionist");
+    setReceptionists(response.data);
+  } catch (err) {
+    console.error(err);
+    alert("Couldn't load receptionists.");
+  }
+};
+
+useEffect(() => {
+  fetchReceptionists();
+}, []);
 
   const [search, setSearch] = useState("");
 
@@ -25,10 +27,24 @@ function DeleteReceptionist() {
       receptionist.id.toString().includes(search)
   );
 
-  const handleDelete = (id) => {
-    console.log("Deleting receptionist:", id);
-    // Later you'll call your backend here.
-  };
+const handleDelete = async (id) => {
+  const confirmed = window.confirm(
+    "Are you sure you want to delete this receptionist?"
+  );
+
+  if (!confirmed) return;
+
+  try {
+    await axios.delete(`/api/receptionist/${id}`);
+
+    alert("Receptionist deleted successfully!");
+
+    fetchReceptionists();
+  } catch (err) {
+    console.error(err);
+    alert("Couldn't delete receptionist.");
+  }
+};
 
   return (
     <div>

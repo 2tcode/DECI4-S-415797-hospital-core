@@ -1,16 +1,39 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function AsDoctor() {
   const [name, setName] = useState("");
   const [id, setId] = useState("");
 
+  const navigate = useNavigate();
+
   const isNameValid = /^[A-Za-z\s]+$/.test(name.trim());
-
-
   const isIdValid = id.trim() !== "" && !isNaN(id);
-
   const isValid = isNameValid && isIdValid;
+
+  async function handleLogin() {
+    try {
+      const response = await axios.post(
+        "/api/doctor/login",
+        {
+          name: name.trim().toLowerCase(),
+          id: Number(id),
+        }
+      );
+
+      console.log(response.data);
+
+      if (response.data.success) {
+        navigate("/doctor/dashboard");
+      } else {
+        alert("Invalid name or ID.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Couldn't connect to the server.");
+    }
+  }
 
   return (
     <div>
@@ -40,13 +63,9 @@ function AsDoctor() {
 
       <br />
 
-      {isValid ? (
-        <Link to="/doctor/dashboard">
-          <button>Login</button>
-        </Link>
-      ) : (
-        <button disabled>Login</button>
-      )}
+      <button disabled={!isValid} onClick={handleLogin}>
+        Login
+      </button>
     </div>
   );
 }

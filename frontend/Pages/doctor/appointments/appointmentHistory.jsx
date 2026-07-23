@@ -1,53 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import AppointmentCard from "../../../components/appointmentCard";
 
 function AppointmentHistory() {
-  const appointments = [
-    {
-      id: 501,
-      patientId: 301,
-      patientName: "Ahmed Hassan",
-      doctorId: 201,
-      doctorName: "Mohamed Ali",
-      date: "2026-07-19",
-      startTime: "10:00 AM",
-      endTime: "10:30 AM",
-      status: "booked",
-    },
-    {
-      id: 502,
-      patientId: 301,
-      patientName: "Ahmed Hassan",
-      doctorId: 201,
-      doctorName: "Mohamed Ali",
-      date: "2026-07-20",
-      startTime: "10:00 AM",
-      endTime: "10:30 AM",
-      status: "completed",
-    },
-    {
-      id: 503,
-      patientId: 302,
-      patientName: "Sarah Ahmed",
-      doctorId: 202,
-      doctorName: "Mona Hassan",
-      date: "2026-07-21",
-      startTime: "2:00 PM",
-      endTime: "2:30 PM",
-      status: "completed",
-    },
-    {
-      id: 504,
-      patientId: 303,
-      patientName: "Omar Ali",
-      doctorId: 203,
-      doctorName: "Youssef Adel",
-      date: "2026-07-22",
-      startTime: "11:00 AM",
-      endTime: "11:30 AM",
-      status: "cancelled",
-    },
-  ];
+  const [appointments, setAppointments] = useState([]);
+
+  useEffect(() => {
+    fetchAppointments();
+}, []);
+
+const fetchAppointments = async () => {
+    try {
+        const response = await axios.get("/appointments");
+        setAppointments(response.data);
+    } catch (err) {
+        console.error(err);
+        alert("Couldn't load appointments.");
+    }
+};
 
   const [patientSearch, setPatientSearch] = useState("");
   const [appointmentSearch, setAppointmentSearch] = useState("");
@@ -57,10 +27,10 @@ function AppointmentHistory() {
       appointment.patientName
         .toLowerCase()
         .includes(patientSearch.toLowerCase()) ||
-      appointment.patientId.toString().includes(patientSearch);
+      appointment.patientID.toString().includes(patientSearch);
 
     const matchesAppointment =
-      appointment.id.toString().includes(appointmentSearch);
+      appointment.appointmentID.toString().includes(appointmentSearch);
 
     return matchesPatient && matchesAppointment;
   });
@@ -91,7 +61,7 @@ function AppointmentHistory() {
       {filteredAppointments.length > 0 ? (
         filteredAppointments.map((appointment) => (
           <AppointmentCard
-            key={appointment.id}
+            key={appointment.appointmentID}
             selected={appointment}
             role="history"
           />
