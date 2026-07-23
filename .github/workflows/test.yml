@@ -31,6 +31,10 @@ jobs:
       - name: Install Backend Dependencies
         run: npm install
 
+      - name: Install Appointment Service Dependencies
+        working-directory: microservices/appointmentservice
+        run: npm install
+
       - name: Run Backend Tests
         run: npm test
 
