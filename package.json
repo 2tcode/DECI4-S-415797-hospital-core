@@ -10,13 +10,15 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "concurrently \"node backend/server.js\" \"node microservices/appointmentservice/server.js\"",
     "seed": "node seeds/seedCluster.js",
-    "pretty": "npx prettier . --write"
+    "pretty": "npx prettier . --write",
+    "light": "lhci autorun"
   },
   "dependencies": {
     "@faker-js/faker": "^10.5.0",
     "canvas-confetti": "^1.9.4"
   },
   "devDependencies": {
+    "@lhci/cli": "^0.15.1",
     "concurrently": "^10.0.3",
     "prettier": "3.9.6"
   }
