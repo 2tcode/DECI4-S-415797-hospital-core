@@ -32,9 +32,9 @@ import Cancel from "../pages/receptionist/book/cancel";
 import AddNew from "../pages/receptionist/patientInfo/addNew";
 import DeletePatient from "../pages/receptionist/patientInfo/deletePatient";
 
-import AsAdmin from "../pages/visitor/login/asAdmin";
-import AsDoctor from "../pages/visitor/login/asDoctor";
-import AsReceptionist from "../pages/visitor/login/asReceptionist";
+import AsAdmin from "../pages/visitor/login/AsAdmin";
+import AsDoctor from "../pages/visitor/login/AsDoctor";
+import AsReceptionist from "../pages/visitor/login/AsReceptionist";
 
 function App() {
   return (
