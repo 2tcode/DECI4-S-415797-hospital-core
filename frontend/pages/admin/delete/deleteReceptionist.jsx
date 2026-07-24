@@ -5,7 +5,7 @@ import {
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
-import ReceptionistCard from "../../../components/receptionisCard";
+import ReceptionistCard from "../../../components/receptionistCard";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
