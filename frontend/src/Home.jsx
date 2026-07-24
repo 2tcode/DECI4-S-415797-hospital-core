@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 function Home() {
   return (
-    <div classname="container">
+    <div className="container">
       <h1 className="title">Welcome to Healthcare!</h1>
 
       <br />
