@@ -1,36 +1,55 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import AppointmentCard from "../../../components/appointmentCard";
+
+const microApi = axios.create({
+  baseURL: import.meta.env.VITE_MICRO_API_URL,
+});
 
 function ViewAppointment() {
   const { id } = useParams();
-  const [appointments, setAppointments] = useState([]);
+  const queryClient = useQueryClient();
+
   const [patientSearch, setPatientSearch] = useState("");
   const [appointmentSearch, setAppointmentSearch] = useState("");
 
-  useEffect(() => {
-    fetchAppointments();
-  }, []);
+  const {
+    data: appointments = [],
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["appointments", "doctor", id],
+    queryFn: async () => {
+      const { data } = await microApi.get(`/appointments/doctor/${id}`);
+      return data;
+    },
+    enabled: !!id,
+  });
 
-  const fetchAppointments = async () => {
-    try {
-      const response = await axios.get(`/appointments/doctor/${id}`);
-      setAppointments(response.data);
-    } catch (err) {
-      console.error(err);
-      alert("Couldn't load appointments.");
-    }
-  };
+  const completeAppointmentMutation = useMutation({
+    mutationFn: (appointmentId) =>
+      microApi.put(`/appointments/${appointmentId}/complete`),
 
-  const handleComplete = async (id) => {
-    try {
-      await axios.put(`/appointments/${id}/complete`);
-      fetchAppointments();
-    } catch (err) {
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["appointments", "doctor", id],
+      });
+    },
+
+    onError: (err) => {
       console.error(err);
       alert("Couldn't update appointment.");
-    }
+    },
+  });
+
+  const handleComplete = (appointmentId) => {
+    completeAppointmentMutation.mutate(appointmentId);
   };
 
   const filteredAppointments = appointments.filter((appointment) => {
@@ -47,6 +66,10 @@ function ViewAppointment() {
     return matchesPatient && matchesAppointment;
   });
 
+  if (isLoading) return <p>Loading appointments...</p>;
+
+  if (isError) return <p>Couldn't load appointments.</p>;
+
   return (
     <div>
       <h1>View Appointment</h1>
@@ -58,7 +81,7 @@ function ViewAppointment() {
         onChange={(e) => setPatientSearch(e.target.value)}
       />
 
-      {"  "}
+      {" "}
 
       <input
         type="text"

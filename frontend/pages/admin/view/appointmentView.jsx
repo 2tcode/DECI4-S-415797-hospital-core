@@ -1,38 +1,46 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
 import AppointmentCard from "../../../components/appointmentCard";
 
+const microApi = axios.create({
+  baseURL: import.meta.env.VITE_MICRO_API_URL,
+});
+
 function AppointmentView() {
-  const [appointments, setAppointments] = useState([]);
-
-  const fetchAppointments = async () => {
-    try {
-      const response = await axios.get("/appointments");
-      setAppointments(response.data);
-    } catch (err) {
-      console.error(err);
-      alert("Couldn't load appointments.");
-    }
-  };
-
-  useEffect(() => {
-    fetchAppointments();
-  }, []);
-
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+
+  const {
+    data: appointments = [],
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["appointments"],
+    queryFn: async () => {
+      const { data } = await microApi.get("/appointments");
+      return data;
+    },
+  });
 
   const filteredAppointments = appointments.filter((appointment) => {
     const matchesSearch =
       appointment.appointmentID.toString().includes(search) ||
       appointment.doctorID.toString().includes(search) ||
-      appointment.doctorName.toLowerCase().includes(search.toLowerCase());
+      appointment.doctorName
+        .toLowerCase()
+        .includes(search.toLowerCase());
 
     const matchesStatus =
-      statusFilter === "all" || appointment.status === statusFilter;
+      statusFilter === "all" ||
+      appointment.status === statusFilter;
 
     return matchesSearch && matchesStatus;
   });
+
+  if (isLoading) return <p>Loading appointments...</p>;
+
+  if (isError) return <p>Couldn't load appointments.</p>;
 
   return (
     <div>
@@ -45,7 +53,7 @@ function AppointmentView() {
         onChange={(e) => setSearch(e.target.value)}
       />
 
-      {"  "}
+      {" "}
 
       <select
         value={statusFilter}
@@ -59,6 +67,7 @@ function AppointmentView() {
 
       <br />
       <br />
+
       <div className="cardContainer">
         {filteredAppointments.length > 0 ? (
           filteredAppointments.map((appointment) => (

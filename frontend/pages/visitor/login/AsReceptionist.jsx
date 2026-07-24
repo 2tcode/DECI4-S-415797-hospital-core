@@ -1,6 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useMutation } from "@tanstack/react-query";
+
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL,
+});
 
 function AsReceptionist() {
   const [name, setName] = useState("");
@@ -12,22 +17,29 @@ function AsReceptionist() {
   const isIdValid = id.trim() !== "" && !isNaN(id);
   const isValid = isNameValid && isIdValid;
 
-  async function handleLogin() {
-    try {
-      const response = await axios.post("/api/receptionist/login", {
-        name: name.trim().toLowerCase(),
-        id: Number(id),
-      });
+  const loginMutation = useMutation({
+    mutationFn: (credentials) =>
+      api.post("/api/receptionist/login", credentials),
 
+    onSuccess: (response) => {
       if (response.data.success) {
         navigate("/receptionist/dashboard");
       } else {
         alert("Invalid name or ID.");
       }
-    } catch (err) {
+    },
+
+    onError: (err) => {
       console.error(err);
       alert("Couldn't connect to the server.");
-    }
+    },
+  });
+
+  function handleLogin() {
+    loginMutation.mutate({
+      name: name.trim().toLowerCase(),
+      id: Number(id),
+    });
   }
 
   return (
@@ -58,8 +70,11 @@ function AsReceptionist() {
 
       <br />
 
-      <button disabled={!isValid} onClick={handleLogin}>
-        Login
+      <button
+        disabled={!isValid || loginMutation.isPending}
+        onClick={handleLogin}
+      >
+        {loginMutation.isPending ? "Logging in..." : "Login"}
       </button>
     </div>
   );

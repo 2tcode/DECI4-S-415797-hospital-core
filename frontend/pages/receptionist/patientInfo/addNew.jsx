@@ -1,7 +1,14 @@
 import { useState } from "react";
 import axios from "axios";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL,
+});
 
 function AddNew() {
+  const queryClient = useQueryClient();
+
   const [id, setId] = useState("");
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
@@ -25,7 +32,36 @@ function AddNew() {
     setHistory(history.filter((_, i) => i !== index));
   };
 
-  const handleSubmit = async () => {
+  const addPatientMutation = useMutation({
+    mutationFn: (patient) => api.post("/api/patient", patient),
+
+    onSuccess: () => {
+      alert("Patient added successfully!");
+
+      queryClient.invalidateQueries({
+        queryKey: ["patients"],
+      });
+
+      setId("");
+      setName("");
+      setAge("");
+      setGender("");
+      setHistory([]);
+      setNewHistory("");
+    },
+
+    onError: (err) => {
+      console.error(err);
+
+      if (err.response?.status === 409) {
+        alert("A patient with this ID already exists.");
+      } else {
+        alert("Couldn't add patient.");
+      }
+    },
+  });
+
+  const handleSubmit = () => {
     const patient = {
       id: Number(id),
       name,
@@ -34,28 +70,7 @@ function AddNew() {
       medicalHistory: history,
     };
 
-    try {
-      await axios.post("/api/patient", patient);
-
-      alert("Patient added successfully!");
-
-      setId("");
-      setName("");
-      setAge("");
-      setGender("");
-      setHistory([]);
-      setNewHistory("");
-    } catch (err) {
-      console.error(err);
-      alert("Couldn't add patient.");
-    }
-
-    setId("");
-    setName("");
-    setAge("");
-    setGender("");
-    setHistory([]);
-    setNewHistory("");
+    addPatientMutation.mutate(patient);
   };
 
   return (
@@ -65,6 +80,7 @@ function AddNew() {
       <p>
         <strong>Patient ID:</strong>
       </p>
+
       <input
         type="number"
         value={id}
@@ -75,6 +91,7 @@ function AddNew() {
       <p>
         <strong>Patient Name:</strong>
       </p>
+
       <input
         type="text"
         value={name}
@@ -85,6 +102,7 @@ function AddNew() {
       <p>
         <strong>Age:</strong>
       </p>
+
       <input
         type="number"
         min="0"
@@ -96,7 +114,11 @@ function AddNew() {
       <p>
         <strong>Gender:</strong>
       </p>
-      <select value={gender} onChange={(e) => setGender(e.target.value)}>
+
+      <select
+        value={gender}
+        onChange={(e) => setGender(e.target.value)}
+      >
         <option value="">Select Gender</option>
         <option value="Male">Male</option>
         <option value="Female">Female</option>
@@ -118,14 +140,24 @@ function AddNew() {
       <ul>
         {history.map((item, index) => (
           <li key={index}>
-            {item} <button onClick={() => removeHistory(index)}>Remove</button>
+            {item}{" "}
+            <button onClick={() => removeHistory(index)}>
+              Remove
+            </button>
           </li>
         ))}
       </ul>
 
       <br />
 
-      <button onClick={handleSubmit}>Add Patient</button>
+      <button
+        onClick={handleSubmit}
+        disabled={addPatientMutation.isPending}
+      >
+        {addPatientMutation.isPending
+          ? "Adding..."
+          : "Add Patient"}
+      </button>
     </div>
   );
 }

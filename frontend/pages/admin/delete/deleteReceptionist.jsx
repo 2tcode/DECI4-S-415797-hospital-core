@@ -1,25 +1,47 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
-import ReceptionistCard from "../../../components/receptionistCard";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
+import ReceptionistCard from "../../../components/receptionisCard";
+
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL,
+});
 
 function DeleteReceptionist() {
-  const [receptionists, setReceptionists] = useState([]);
-
-  const fetchReceptionists = async () => {
-    try {
-      const response = await axios.get("/api/receptionist");
-      setReceptionists(response.data);
-    } catch (err) {
-      console.error(err);
-      alert("Couldn't load receptionists.");
-    }
-  };
-
-  useEffect(() => {
-    fetchReceptionists();
-  }, []);
-
   const [search, setSearch] = useState("");
+  const queryClient = useQueryClient();
+
+  const {
+    data: receptionists = [],
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["receptionists"],
+    queryFn: async () => {
+      const { data } = await api.get("/api/receptionist");
+      return data;
+    },
+  });
+
+  const deleteReceptionistMutation = useMutation({
+    mutationFn: (id) => api.delete(`/api/receptionist/${id}`),
+
+    onSuccess: () => {
+      alert("Receptionist deleted successfully!");
+      queryClient.invalidateQueries({
+        queryKey: ["receptionists"],
+      });
+    },
+
+    onError: (err) => {
+      console.error(err);
+      alert("Couldn't delete receptionist.");
+    },
+  });
 
   const filteredReceptionists = receptionists.filter(
     (receptionist) =>
@@ -27,24 +49,19 @@ function DeleteReceptionist() {
       receptionist.id.toString().includes(search),
   );
 
-  const handleDelete = async (id) => {
+  const handleDelete = (id) => {
     const confirmed = window.confirm(
       "Are you sure you want to delete this receptionist?",
     );
 
     if (!confirmed) return;
 
-    try {
-      await axios.delete(`/api/receptionist/${id}`);
-
-      alert("Receptionist deleted successfully!");
-
-      fetchReceptionists();
-    } catch (err) {
-      console.error(err);
-      alert("Couldn't delete receptionist.");
-    }
+    deleteReceptionistMutation.mutate(id);
   };
+
+  if (isLoading) return <p>Loading receptionists...</p>;
+
+  if (isError) return <p>Couldn't load receptionists.</p>;
 
   return (
     <div>
@@ -59,6 +76,7 @@ function DeleteReceptionist() {
 
       <br />
       <br />
+
       <div className="cardContainer">
         {filteredReceptionists.length > 0 ? (
           filteredReceptionists.map((receptionist) => (

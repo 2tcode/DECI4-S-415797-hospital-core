@@ -1,5 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import axios from "axios";
+import { useMutation } from "@tanstack/react-query";
+
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL,
+});
 
 function NewReceptionist() {
   const [name, setName] = useState("");
@@ -11,25 +16,35 @@ function NewReceptionist() {
     setName(value);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const addReceptionistMutation = useMutation({
+    mutationFn: (receptionist) =>
+      api.post("/api/receptionist", receptionist),
 
-    const receptionist = {
-      name,
-      id: Number(id),
-    };
-
-    try {
-      await axios.post("/api/receptionist", receptionist);
-
+    onSuccess: () => {
       alert("Receptionist added successfully!");
 
       setName("");
       setId("");
-    } catch (err) {
+    },
+
+    onError: (err) => {
       console.error(err);
-      alert("Couldn't add receptionist.");
-    }
+
+      if (err.response?.status === 409) {
+        alert("A receptionist with this ID already exists.");
+      } else {
+        alert("Couldn't add receptionist.");
+      }
+    },
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    addReceptionistMutation.mutate({
+      name,
+      id: Number(id),
+    });
   };
 
   return (
@@ -65,7 +80,14 @@ function NewReceptionist() {
 
         <br />
 
-        <button type="submit">Add Receptionist</button>
+        <button
+          type="submit"
+          disabled={addReceptionistMutation.isPending}
+        >
+          {addReceptionistMutation.isPending
+            ? "Adding..."
+            : "Add Receptionist"}
+        </button>
       </form>
     </div>
   );

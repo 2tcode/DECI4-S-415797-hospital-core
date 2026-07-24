@@ -1,35 +1,78 @@
-import { useEffect, useState } from "react";
 import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
+
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL,
+});
+
+const microApi = axios.create({
+  baseURL: import.meta.env.VITE_MICRO_API_URL,
+});
 
 function GeneralView() {
-  const [doctors, setDoctors] = useState([]);
-  const [receptionists, setReceptionists] = useState([]);
-  const [admins, setAdmins] = useState([]);
-  const [appointments, setAppointments] = useState([]);
+  const {
+    data: doctors = [],
+    isLoading: doctorsLoading,
+    isError: doctorsError,
+  } = useQuery({
+    queryKey: ["doctors"],
+    queryFn: async () => {
+      const { data } = await api.get("/api/doctor");
+      return data;
+    },
+  });
 
-  const fetchData = async () => {
-    try {
-      const [doctorsRes, receptionistsRes, adminsRes, appointmentsRes] =
-        await Promise.all([
-          axios.get("/api/doctor"),
-          axios.get("/api/receptionist"),
-          axios.get("/api/admin"),
-          axios.get("/appointments"),
-        ]);
+  const {
+    data: receptionists = [],
+    isLoading: receptionistsLoading,
+    isError: receptionistsError,
+  } = useQuery({
+    queryKey: ["receptionists"],
+    queryFn: async () => {
+      const { data } = await api.get("/api/receptionist");
+      return data;
+    },
+  });
 
-      setDoctors(doctorsRes.data);
-      setReceptionists(receptionistsRes.data);
-      setAdmins(adminsRes.data);
-      setAppointments(appointmentsRes.data);
-    } catch (err) {
-      console.error(err);
-      alert("Couldn't load dashboard.");
-    }
-  };
+  const {
+    data: admins = [],
+    isLoading: adminsLoading,
+    isError: adminsError,
+  } = useQuery({
+    queryKey: ["admins"],
+    queryFn: async () => {
+      const { data } = await api.get("/api/admin");
+      return data;
+    },
+  });
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  const {
+    data: appointments = [],
+    isLoading: appointmentsLoading,
+    isError: appointmentsError,
+  } = useQuery({
+    queryKey: ["appointments"],
+    queryFn: async () => {
+      const { data } = await microApi.get("/appointments");
+      return data;
+    },
+  });
+
+  const isLoading =
+    doctorsLoading ||
+    receptionistsLoading ||
+    adminsLoading ||
+    appointmentsLoading;
+
+  const isError =
+    doctorsError ||
+    receptionistsError ||
+    adminsError ||
+    appointmentsError;
+
+  if (isLoading) return <p>Loading dashboard...</p>;
+
+  if (isError) return <p>Couldn't load dashboard.</p>;
 
   const bookedAppointments = appointments.filter(
     (appointment) => appointment.status === "Booked",

@@ -1,28 +1,31 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
-import AppointmentCard from "../../../components/appointmentCard";
+import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
+import AppointmentCard from "../../../components/appointmentCard";
+
+const microApi = axios.create({
+  baseURL: import.meta.env.VITE_MICRO_API_URL,
+});
 
 function AppointmentHistory() {
   const { id } = useParams();
-  const [appointments, setAppointments] = useState([]);
-
-  useEffect(() => {
-    fetchAppointments();
-  }, []);
-
-  const fetchAppointments = async () => {
-    try {
-      const response = await axios.get(`/appointments/doctor/${id}`);
-      setAppointments(response.data);
-    } catch (err) {
-      console.error(err);
-      alert("Couldn't load appointments.");
-    }
-  };
 
   const [patientSearch, setPatientSearch] = useState("");
   const [appointmentSearch, setAppointmentSearch] = useState("");
+
+  const {
+    data: appointments = [],
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["appointments", "doctor", id],
+    queryFn: async () => {
+      const { data } = await microApi.get(`/appointments/doctor/${id}`);
+      return data;
+    },
+    enabled: !!id,
+  });
 
   const filteredAppointments = appointments.filter((appointment) => {
     const matchesPatient =
@@ -38,6 +41,10 @@ function AppointmentHistory() {
     return matchesPatient && matchesAppointment;
   });
 
+  if (isLoading) return <p>Loading appointments...</p>;
+
+  if (isError) return <p>Couldn't load appointments.</p>;
+
   return (
     <div>
       <h1>Appointment History</h1>
@@ -49,7 +56,7 @@ function AppointmentHistory() {
         onChange={(e) => setPatientSearch(e.target.value)}
       />
 
-      {"  "}
+      {" "}
 
       <input
         type="text"
@@ -60,6 +67,7 @@ function AppointmentHistory() {
 
       <br />
       <br />
+
       <div className="cardContainer">
         {filteredAppointments.length > 0 ? (
           filteredAppointments.map((appointment) => (

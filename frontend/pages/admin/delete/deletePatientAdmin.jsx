@@ -1,31 +1,55 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import PatientCard from "../../../components/patientCard";
 
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL,
+});
+
 function DeletePatient() {
-  const [patients, setPatients] = useState([]);
-
-  const fetchPatients = async () => {
-    try {
-      const response = await axios.get("/api/patient");
-      setPatients(response.data);
-    } catch (err) {
-      console.error(err);
-      alert("Couldn't load patients.");
-    }
-  };
-
-  useEffect(() => {
-    fetchPatients();
-  }, []);
-
   const [search, setSearch] = useState("");
+  const queryClient = useQueryClient();
+
+  const {
+    data: patients = [],
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["patients"],
+    queryFn: async () => {
+      const { data } = await api.get("/api/patient");
+      return data;
+    },
+  });
+
+  const deletePatientMutation = useMutation({
+    mutationFn: (id) => api.delete(`/api/patient/${id}`),
+
+    onSuccess: () => {
+      alert("Patient deleted successfully!");
+      queryClient.invalidateQueries({ queryKey: ["patients"] });
+    },
+
+    onError: (err) => {
+      console.error(err);
+      alert("Couldn't delete patient.");
+    },
+  });
 
   const filteredPatients = patients.filter(
     (patient) =>
       patient.name.toLowerCase().includes(search.toLowerCase()) ||
       patient.id.toString().includes(search),
   );
+
+  if (isLoading) return <p>Loading patients...</p>;
+
+  if (isError) return <p>Couldn't load patients.</p>;
 
   return (
     <div>
@@ -40,6 +64,7 @@ function DeletePatient() {
 
       <br />
       <br />
+
       <div className="cardContainer">
         {filteredPatients.length > 0 ? (
           filteredPatients.map((patient) => (
@@ -47,23 +72,14 @@ function DeletePatient() {
               key={patient.id}
               selected={patient}
               role="delete"
-              onDelete={async (id) => {
+              onDelete={(id) => {
                 const confirmed = window.confirm(
-                  "Are you sure you want to delete this patient?",
+                  "Are you sure you want to delete this patient?"
                 );
 
                 if (!confirmed) return;
 
-                try {
-                  await axios.delete(`/api/patient/${id}`);
-
-                  alert("Patient deleted successfully!");
-
-                  fetchPatients();
-                } catch (err) {
-                  console.error(err);
-                  alert("Couldn't delete patient.");
-                }
+                deletePatientMutation.mutate(id);
               }}
             />
           ))

@@ -1,5 +1,10 @@
 import { useState } from "react";
 import axios from "axios";
+import { useMutation } from "@tanstack/react-query";
+
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL,
+});
 
 function NewDoctor() {
   const [name, setName] = useState("");
@@ -33,20 +38,10 @@ function NewDoctor() {
     setName(value);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const addDoctorMutation = useMutation({
+    mutationFn: (doctor) => api.post("/api/doctor", doctor),
 
-    const doctor = {
-      name,
-      id: Number(id),
-      specialization: specialization,
-      workDays,
-      workHours,
-    };
-
-    try {
-      await axios.post("/api/doctor", doctor);
-
+    onSuccess: () => {
       alert("Doctor added successfully!");
 
       setName("");
@@ -57,15 +52,29 @@ function NewDoctor() {
         from: "",
         to: "",
       });
-    } catch (err) {
+    },
+
+    onError: (err) => {
       console.error(err);
-      alert("Couldn't add doctor.");
-      if (err.code === 11000) {
-        return res.status(409).json({
-          message: "A doctor with this ID already exists.",
-        });
+
+      if (err.response?.status === 409) {
+        alert("A doctor with this ID already exists.");
+      } else {
+        alert("Couldn't add doctor.");
       }
-    }
+    },
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    addDoctorMutation.mutate({
+      name,
+      id: Number(id),
+      specialization,
+      workDays,
+      workHours,
+    });
   };
 
   return (
@@ -162,7 +171,12 @@ function NewDoctor() {
 
         <br />
 
-        <button type="submit">Add Doctor</button>
+        <button
+          type="submit"
+          disabled={addDoctorMutation.isPending}
+        >
+          {addDoctorMutation.isPending ? "Adding..." : "Add Doctor"}
+        </button>
       </form>
     </div>
   );

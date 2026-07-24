@@ -1,26 +1,51 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import AppointmentCard from "../../../components/appointmentCard";
 
+const microApi = axios.create({
+  baseURL: import.meta.env.VITE_MICRO_API_URL,
+});
+
 function Cancel() {
-  const [appointments, setAppointments] = useState([]);
-
-  const fetchAppointments = async () => {
-    try {
-      const response = await axios.get("/appointments");
-      setAppointments(response.data);
-    } catch (err) {
-      console.error(err);
-      alert("Couldn't load appointments.");
-    }
-  };
-
-  useEffect(() => {
-    fetchAppointments();
-  }, []);
+  const queryClient = useQueryClient();
 
   const [appointmentSearch, setAppointmentSearch] = useState("");
   const [patientSearch, setPatientSearch] = useState("");
+
+  const {
+    data: appointments = [],
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["appointments"],
+    queryFn: async () => {
+      const { data } = await microApi.get("/appointments");
+      return data;
+    },
+  });
+
+  const cancelAppointmentMutation = useMutation({
+    mutationFn: (appointmentId) =>
+      microApi.put(`/appointments/${appointmentId}/cancel`),
+
+    onSuccess: () => {
+      alert("Appointment cancelled!");
+
+      queryClient.invalidateQueries({
+        queryKey: ["appointments"],
+      });
+    },
+
+    onError: (err) => {
+      console.error(err);
+      alert("Couldn't cancel appointment.");
+    },
+  });
 
   const filteredAppointments = appointments.filter((appointment) => {
     const matchesAppointment = appointment.appointmentID
@@ -35,6 +60,10 @@ function Cancel() {
 
     return matchesAppointment && matchesPatient;
   });
+
+  if (isLoading) return <p>Loading appointments...</p>;
+
+  if (isError) return <p>Couldn't load appointments.</p>;
 
   return (
     <div>
@@ -58,6 +87,7 @@ function Cancel() {
 
       <br />
       <br />
+
       <div className="cardContainer">
         {filteredAppointments.length > 0 ? (
           filteredAppointments.map((appointment) => (
@@ -65,18 +95,7 @@ function Cancel() {
               key={appointment.appointmentID}
               selected={appointment}
               role="cancel"
-              onCancel={async (id) => {
-                try {
-                  await axios.put(`/appointments/${id}/cancel`);
-
-                  alert("Appointment cancelled!");
-
-                  fetchAppointments();
-                } catch (err) {
-                  console.error(err);
-                  alert("Couldn't cancel appointment.");
-                }
-              }}
+              onCancel={(id) => cancelAppointmentMutation.mutate(id)}
             />
           ))
         ) : (

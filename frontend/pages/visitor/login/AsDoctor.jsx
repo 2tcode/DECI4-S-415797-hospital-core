@@ -1,12 +1,11 @@
 import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-
-function AdminDashboard() {
-  const { id } = useParams();
-
-  console.log(id);
-}
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useMutation } from "@tanstack/react-query";
+
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL,
+});
 
 function AsDoctor() {
   const [name, setName] = useState("");
@@ -18,13 +17,11 @@ function AsDoctor() {
   const isIdValid = id.trim() !== "" && !isNaN(id);
   const isValid = isNameValid && isIdValid;
 
-  async function handleLogin() {
-    try {
-      const response = await axios.post("/api/doctor/login", {
-        name: name.trim().toLowerCase(),
-        id: Number(id),
-      });
+  const loginMutation = useMutation({
+    mutationFn: (credentials) =>
+      api.post("/api/doctor/login", credentials),
 
+    onSuccess: (response) => {
       console.log(response.data);
 
       if (response.data.success) {
@@ -32,10 +29,19 @@ function AsDoctor() {
       } else {
         alert("Invalid name or ID.");
       }
-    } catch (err) {
+    },
+
+    onError: (err) => {
       console.error(err);
       alert("Couldn't connect to the server.");
-    }
+    },
+  });
+
+  function handleLogin() {
+    loginMutation.mutate({
+      name: name.trim().toLowerCase(),
+      id: Number(id),
+    });
   }
 
   return (
@@ -66,8 +72,11 @@ function AsDoctor() {
 
       <br />
 
-      <button disabled={!isValid} onClick={handleLogin}>
-        Login
+      <button
+        disabled={!isValid || loginMutation.isPending}
+        onClick={handleLogin}
+      >
+        {loginMutation.isPending ? "Logging in..." : "Login"}
       </button>
     </div>
   );

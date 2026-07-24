@@ -1,48 +1,23 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import DoctorCard from "../../../components/doctorCard";
 import PatientCard from "../../../components/patientCard";
 
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL,
+});
+
+const microApi = axios.create({
+  baseURL: import.meta.env.VITE_MICRO_API_URL,
+});
+
 function Book() {
-  const [doctors, setDoctors] = useState([]);
-  const [patients, setPatients] = useState([]);
-  const [appointments, setAppointments] = useState([]);
-
-  const fetchDoctors = async () => {
-    try {
-      const response = await axios.get("/api/doctor");
-      setDoctors(response.data);
-    } catch (err) {
-      console.error(err);
-      alert("Couldn't load doctors.");
-    }
-  };
-
-  const fetchPatients = async () => {
-    try {
-      const response = await axios.get("/api/patient");
-      setPatients(response.data);
-    } catch (err) {
-      console.error(err);
-      alert("Couldn't load patients.");
-    }
-  };
-
-  const fetchAppointments = async () => {
-    try {
-      const response = await axios.get("/appointments");
-      setAppointments(response.data);
-    } catch (err) {
-      console.error(err);
-      alert("Couldn't load appointments.");
-    }
-  };
-
-  useEffect(() => {
-    fetchDoctors();
-    fetchPatients();
-    fetchAppointments();
-  }, []);
+  const queryClient = useQueryClient();
 
   const [nextAppointmentId] = useState(
     Math.floor(Math.random() * 900000) + 100000,
@@ -55,6 +30,78 @@ function Book() {
 
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [selectedPatient, setSelectedPatient] = useState(null);
+
+  // Doctors
+  const {
+    data: doctors = [],
+    isLoading: doctorsLoading,
+    isError: doctorsError,
+  } = useQuery({
+    queryKey: ["doctors"],
+    queryFn: async () => {
+      const { data } = await api.get("/api/doctor");
+      return data;
+    },
+  });
+
+  // Patients
+  const {
+    data: patients = [],
+    isLoading: patientsLoading,
+    isError: patientsError,
+  } = useQuery({
+    queryKey: ["patients"],
+    queryFn: async () => {
+      const { data } = await api.get("/api/patient");
+      return data;
+    },
+  });
+
+  // Appointments
+  const {
+    data: appointments = [],
+    isLoading: appointmentsLoading,
+    isError: appointmentsError,
+  } = useQuery({
+    queryKey: ["appointments"],
+    queryFn: async () => {
+      const { data } = await microApi.get("/appointments");
+      return data;
+    },
+  });
+
+  const bookAppointmentMutation = useMutation({
+    mutationFn: (appointment) =>
+      microApi.post("/appointments", appointment),
+
+    onSuccess: () => {
+      alert("Appointment booked successfully!");
+
+      queryClient.invalidateQueries({
+        queryKey: ["appointments"],
+      });
+
+      setSelectedDoctor(null);
+      setSelectedPatient(null);
+      setSelectedDate("");
+      setSelectedTime("");
+    },
+
+    onError: (err) => {
+      console.error(err);
+      alert("Couldn't book appointment.");
+    },
+  });
+
+  const isLoading =
+    doctorsLoading || patientsLoading || appointmentsLoading;
+
+  const isError =
+    doctorsError || patientsError || appointmentsError;
+
+  if (isLoading) return <p>Loading booking page...</p>;
+
+  if (isError) return <p>Couldn't load booking page.</p>;
 
   const filteredDoctors = doctors.filter((doctor) => {
     const search = doctorSearch.toLowerCase();
@@ -92,12 +139,14 @@ function Book() {
 
   const filteredPatients = patients.filter((patient) => {
     return (
-      patient.name.toLowerCase().includes(patientSearch.toLowerCase()) ||
+      patient.name
+        .toLowerCase()
+        .includes(patientSearch.toLowerCase()) ||
       patient.id.toString().includes(patientSearch)
     );
   });
 
-  const handleBookAppointment = async () => {
+  const handleBookAppointment = () => {
     const [hours, minutes] = selectedTime.split(":").map(Number);
 
     const end = new Date();
@@ -119,21 +168,7 @@ function Book() {
       status: "Booked",
     };
 
-    try {
-      await axios.post("/appointments", newAppointment);
-
-      alert("Appointment booked successfully!");
-
-      fetchAppointments();
-
-      setSelectedDoctor(null);
-      setSelectedPatient(null);
-      setSelectedDate("");
-      setSelectedTime("");
-    } catch (err) {
-      console.error(err);
-      alert("Couldn't book appointment.");
-    }
+    bookAppointmentMutation.mutate(newAppointment);
   };
 
   return (
@@ -167,6 +202,7 @@ function Book() {
 
       <br />
       <br />
+
       <div className="cardContainer">
         {filteredDoctors.length > 0 ? (
           filteredDoctors.map((doctor) => (
@@ -183,6 +219,7 @@ function Book() {
           <p>No doctors available.</p>
         )}
       </div>
+
       <hr />
 
       <h3>Select Patient</h3>
@@ -223,7 +260,8 @@ function Book() {
       </p>
 
       <p>
-        <strong>Doctor:</strong> {selectedDoctor ? selectedDoctor.name : "None"}
+        <strong>Doctor:</strong>{" "}
+        {selectedDoctor ? selectedDoctor.name : "None"}
       </p>
 
       <p>
@@ -246,11 +284,17 @@ function Book() {
 
       <button
         disabled={
-          !selectedDoctor || !selectedPatient || !selectedDate || !selectedTime
+          !selectedDoctor ||
+          !selectedPatient ||
+          !selectedDate ||
+          !selectedTime ||
+          bookAppointmentMutation.isPending
         }
         onClick={handleBookAppointment}
       >
-        Book Appointment
+        {bookAppointmentMutation.isPending
+          ? "Booking..."
+          : "Book Appointment"}
       </button>
     </div>
   );

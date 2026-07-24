@@ -1,26 +1,56 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import PatientCard from "../../../components/patientCard";
 
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL,
+});
+
 function ViewPatient() {
-  const [patients, setPatients] = useState([]);
-
-  useEffect(() => {
-    fetchPatients();
-  }, []);
-
-  const fetchPatients = async () => {
-    try {
-      const response = await axios.get("/api/patient");
-      setPatients(response.data);
-      console.log(response.data);
-    } catch (err) {
-      console.error(err);
-      alert("Couldn't load patients.");
-    }
-  };
-
   const [search, setSearch] = useState("");
+  const queryClient = useQueryClient();
+
+  const {
+    data: patients = [],
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["patients"],
+    queryFn: async () => {
+      const { data } = await api.get("/api/patient");
+      return data;
+    },
+  });
+
+  const updatePatientMutation = useMutation({
+    mutationFn: ({ id, medicalHistory }) =>
+      api.put(`/api/patient/${id}`, {
+        medicalHistory,
+      }),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["patients"],
+      });
+    },
+
+    onError: (err) => {
+      console.error(err);
+      alert("Couldn't update patient.");
+    },
+  });
+
+  const handleSave = (id, updatedHistory) => {
+    updatePatientMutation.mutate({
+      id,
+      medicalHistory: updatedHistory,
+    });
+  };
 
   const filteredPatients = patients.filter(
     (patient) =>
@@ -28,18 +58,9 @@ function ViewPatient() {
       patient.id.toString().includes(search),
   );
 
-  const handleSave = async (id, updatedHistory) => {
-    try {
-      await axios.put(`/api/patient/${id}`, {
-        medicalHistory: updatedHistory,
-      });
+  if (isLoading) return <p>Loading patients...</p>;
 
-      fetchPatients();
-    } catch (err) {
-      console.error(err);
-      alert("Couldn't update patient.");
-    }
-  };
+  if (isError) return <p>Couldn't load patients.</p>;
 
   return (
     <div>
@@ -54,6 +75,7 @@ function ViewPatient() {
 
       <br />
       <br />
+
       <div className="cardContainer">
         {filteredPatients.length > 0 ? (
           filteredPatients.map((patient) => (

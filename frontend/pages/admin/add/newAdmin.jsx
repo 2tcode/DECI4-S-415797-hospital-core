@@ -1,5 +1,10 @@
 import { useState } from "react";
 import axios from "axios";
+import { useMutation } from "@tanstack/react-query";
+
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL,
+});
 
 function NewAdmin() {
   const [name, setName] = useState("");
@@ -10,25 +15,26 @@ function NewAdmin() {
     setName(value);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const admin = {
-      name,
-      id: Number(id),
-    };
-
-    try {
-      await axios.post("/api/admin", admin);
-
+  const addAdminMutation = useMutation({
+    mutationFn: (admin) => api.post("/api/admin", admin),
+    onSuccess: () => {
       alert("Admin added successfully!");
-
       setName("");
       setId("");
-    } catch (err) {
+    },
+    onError: (err) => {
       console.error(err);
       alert("Couldn't add admin.");
-    }
+    },
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    addAdminMutation.mutate({
+      name,
+      id: Number(id),
+    });
   };
 
   return (
@@ -66,7 +72,12 @@ function NewAdmin() {
 
         <br />
 
-        <button type="submit">Add Admin</button>
+        <button
+          type="submit"
+          disabled={addAdminMutation.isPending}
+        >
+          {addAdminMutation.isPending ? "Adding..." : "Add Admin"}
+        </button>
       </form>
     </div>
   );
