@@ -1,6 +1,6 @@
 {
   "name": "project",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "license": "ISC",
   "author": "",
@@ -11,7 +11,8 @@
     "start": "concurrently \"node backend/server.js\" \"node microservices/appointmentservice/server.js\"",
     "seed": "node seeds/seedCluster.js",
     "pretty": "npx prettier . --write",
-    "light": "lhci autorun"
+    "light": "lhci autorun",
+    "release": "standard-version"
   },
   "dependencies": {
     "@faker-js/faker": "^10.5.0",
@@ -20,6 +21,7 @@
   "devDependencies": {
     "@lhci/cli": "^0.15.1",
     "concurrently": "^10.0.3",
-    "prettier": "3.9.6"
+    "prettier": "3.9.6",
+    "standard-version": "^9.5.0"
   }
 }
