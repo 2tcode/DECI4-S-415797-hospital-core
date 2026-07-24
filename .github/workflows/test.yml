@@ -13,37 +13,45 @@ on:
 
 jobs:
   backend-tests:
-  runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
 
-  services:
-    mongodb:
-      image: mongo:8
-      ports:
-        - 27017:27017
+    services:
+      mongodb:
+        image: mongo:8
+        ports:
+          - 27017:27017
 
-  env:
-    MONGODB_URI: mongodb://localhost:27017/healthcare
-    MICRO_MONGODB_URI: mongodb://localhost:27017/appointments
-    JWT_SECRET: test_secret
+    env:
+      MONGODB_URI: mongodb://localhost:27017/healthcare
+      MICRO_MONGODB_URI: mongodb://localhost:27017/appointments
+      JWT_SECRET: test_secret
 
-  defaults:
-    run:
-      working-directory: backend
+    defaults:
+      run:
+        working-directory: backend
 
-  steps:
-    - uses: actions/checkout@v4
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-    - uses: actions/setup-node@v4
-      with:
-        node-version: 20
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
 
-    - run: npm install
+      - name: Wait for MongoDB
+        run: |
+          sleep 10
 
-    - name: Install Appointment Service Dependencies
-      working-directory: microservices/appointmentservice
-      run: npm install
+      - name: Install Backend Dependencies
+        run: npm install
 
-    - run: npm test
+      - name: Install Appointment Service Dependencies
+        working-directory: ./microservices/appointmentservice
+        run: npm install
+
+      - name: Run Backend Tests
+        run: npm test
 
   frontend-tests:
     runs-on: ubuntu-latest
