@@ -17,14 +17,11 @@ afterAll(async () => {
 });
 
 describe("Receptionist API", () => {
-
   test("creates a receptionist", async () => {
-    const response = await request(app)
-      .post("/api/receptionist")
-      .send({
-        id: 123456,
-        name: "Emily Johnson",
-      });
+    const response = await request(app).post("/api/receptionist").send({
+      id: 123456,
+      name: "Emily Johnson",
+    });
 
     expect(response.status).toBe(201);
     expect(response.body.name).toBe("Emily Johnson");
@@ -32,15 +29,12 @@ describe("Receptionist API", () => {
   });
 
   test("gets all receptionists", async () => {
-    await request(app)
-      .post("/api/receptionist")
-      .send({
-        id: 123456,
-        name: "Emily Johnson",
-      });
+    await request(app).post("/api/receptionist").send({
+      id: 123456,
+      name: "Emily Johnson",
+    });
 
-    const response = await request(app)
-      .get("/api/receptionist");
+    const response = await request(app).get("/api/receptionist");
 
     expect(response.status).toBe(200);
     expect(Array.isArray(response.body)).toBe(true);
@@ -49,49 +43,39 @@ describe("Receptionist API", () => {
   });
 
   test("receptionist can log in with valid credentials", async () => {
-    await request(app)
-      .post("/api/receptionist")
-      .send({
-        id: 123456,
-        name: "Emily Johnson",
-      });
+    await request(app).post("/api/receptionist").send({
+      id: 123456,
+      name: "Emily Johnson",
+    });
 
-    const response = await request(app)
-      .post("/api/receptionist/login")
-      .send({
-        id: 123456,
-        name: "Emily Johnson",
-      });
+    const response = await request(app).post("/api/receptionist/login").send({
+      id: 123456,
+      name: "Emily Johnson",
+    });
 
     expect(response.status).toBe(200);
     expect(response.body.success).toBe(true);
   });
 
   test("receptionist login fails with invalid credentials", async () => {
-    const response = await request(app)
-      .post("/api/receptionist/login")
-      .send({
-        id: 999999,
-        name: "Nobody",
-      });
+    const response = await request(app).post("/api/receptionist/login").send({
+      id: 999999,
+      name: "Nobody",
+    });
 
     expect(response.status).toBe(200);
     expect(response.body.success).toBe(false);
   });
 
   test("deletes an existing receptionist", async () => {
-    await request(app)
-      .post("/api/receptionist")
-      .send({
-        id: 123456,
-        name: "Emily Johnson",
-      });
+    await request(app).post("/api/receptionist").send({
+      id: 123456,
+      name: "Emily Johnson",
+    });
 
-    const response = await request(app)
-      .delete("/api/receptionist/123456");
+    const response = await request(app).delete("/api/receptionist/123456");
 
     expect(response.status).toBe(200);
     expect(response.body.message).toMatch(/deleted successfully/i);
   });
-
 });

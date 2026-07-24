@@ -13,32 +13,39 @@ on:
 
 jobs:
   backend-tests:
-    runs-on: ubuntu-latest
+  runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        working-directory: backend
+  services:
+    mongodb:
+      image: mongo:8
+      ports:
+        - 27017:27017
 
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+  env:
+    MONGODB_URI: mongodb://localhost:27017/healthcare
+    MICRO_MONGODB_URI: mongodb://localhost:27017/appointments
+    JWT_SECRET: test_secret
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
+  defaults:
+    run:
+      working-directory: backend
 
-      - name: Install Backend Dependencies
-        run: npm install
+  steps:
+    - uses: actions/checkout@v4
 
-      - name: Install Appointment Service Dependencies
-        working-directory: microservices/appointmentservice
-        run: npm install
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 20
 
-      - name: Run Backend Tests
-        run: npm test
+    - run: npm install
 
-  frontend-tests:    # <-- Two spaces before this
+    - name: Install Appointment Service Dependencies
+      working-directory: microservices/appointmentservice
+      run: npm install
+
+    - run: npm test
+
+  frontend-tests:
     runs-on: ubuntu-latest
 
     defaults:

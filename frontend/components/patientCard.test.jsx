@@ -95,9 +95,7 @@ describe("PatientCard", () => {
       />,
     );
 
-    fireEvent.click(
-      screen.getByRole("button", { name: /select patient/i }),
-    );
+    fireEvent.click(screen.getByRole("button", { name: /select patient/i }));
 
     expect(onSelect).toHaveBeenCalledWith(1);
   });
@@ -113,12 +111,9 @@ describe("PatientCard", () => {
       />,
     );
 
-    fireEvent.change(
-      screen.getByPlaceholderText(/add medical history/i),
-      {
-        target: { value: "Allergy" },
-      },
-    );
+    fireEvent.change(screen.getByPlaceholderText(/add medical history/i), {
+      target: { value: "Allergy" },
+    });
 
     fireEvent.click(screen.getByRole("button", { name: /^add$/i }));
 
@@ -154,9 +149,7 @@ describe("PatientCard", () => {
       />,
     );
 
-    fireEvent.click(
-      screen.getByRole("button", { name: /save changes/i }),
-    );
+    fireEvent.click(screen.getByRole("button", { name: /save changes/i }));
 
     expect(onSave).toHaveBeenCalledWith(1, ["Diabetes", "Asthma"]);
   });

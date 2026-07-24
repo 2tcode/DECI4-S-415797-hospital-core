@@ -37,9 +37,7 @@ describe("DoctorCard", () => {
       />,
     );
 
-    expect(
-      screen.getByRole("button", { name: /delete/i }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /delete/i })).toBeInTheDocument();
 
     expect(
       screen.queryByRole("button", { name: /book appointment/i }),

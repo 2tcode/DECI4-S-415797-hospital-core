@@ -23,7 +23,7 @@ describe("AppointmentCard", () => {
         role="view"
         onCancel={() => {}}
         onComplete={() => {}}
-      />
+      />,
     );
 
     expect(screen.getByText("Appointment")).toBeInTheDocument();
@@ -39,13 +39,13 @@ describe("AppointmentCard", () => {
         role="cancel"
         onCancel={() => {}}
         onComplete={() => {}}
-      />
+      />,
     );
 
     expect(
       screen.getByRole("button", {
         name: /Cancel Appointment/i,
-      })
+      }),
     ).toBeInTheDocument();
   });
 
@@ -56,13 +56,13 @@ describe("AppointmentCard", () => {
         role="completed"
         onCancel={() => {}}
         onComplete={() => {}}
-      />
+      />,
     );
 
     expect(
       screen.getByRole("button", {
         name: /Mark as Completed/i,
-      })
+      }),
     ).toBeInTheDocument();
   });
 
@@ -73,7 +73,7 @@ describe("AppointmentCard", () => {
         role="history"
         onCancel={() => {}}
         onComplete={() => {}}
-      />
+      />,
     );
 
     expect(screen.queryByText("Appointment")).not.toBeInTheDocument();
@@ -90,13 +90,13 @@ describe("AppointmentCard", () => {
         role="cancel"
         onCancel={onCancel}
         onComplete={() => {}}
-      />
+      />,
     );
 
     fireEvent.click(
       screen.getByRole("button", {
         name: /Cancel Appointment/i,
-      })
+      }),
     );
 
     expect(onCancel).toHaveBeenCalledWith(1001);

@@ -3,15 +3,11 @@ module.exports = {
 
   moduleFileExtensions: ["js", "jsx"],
 
-  testMatch: [
-    "**/?(*.)+(test).[jt]sx"
-  ],
+  testMatch: ["**/?(*.)+(test).[jt]sx"],
 
-  setupFilesAfterEnv: [
-    "<rootDir>/jest.setup.js"
-  ],
+  setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
 
   transform: {
-    "^.+\\.[jt]sx?$": "babel-jest"
-  }
+    "^.+\\.[jt]sx?$": "babel-jest",
+  },
 };

@@ -30,9 +30,7 @@ describe("ReceptionistCard", () => {
       />,
     );
 
-    expect(
-      screen.getByRole("button", { name: /delete/i }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /delete/i })).toBeInTheDocument();
   });
 
   test("calls onDelete after confirmation", () => {

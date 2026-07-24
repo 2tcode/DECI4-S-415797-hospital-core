@@ -25,9 +25,7 @@ afterAll(async () => {
 });
 
 describe("End-to-End Workflow", () => {
-
   test("register patient, book appointment and update dashboard statistics", async () => {
-
     const patientResponse = await request(backendApp)
       .post("/api/patient")
       .send({
@@ -58,18 +56,14 @@ describe("End-to-End Workflow", () => {
 
     expect(appointmentResponse.status).toBe(201);
 
-    const patients = await request(backendApp)
-      .get("/api/patient");
+    const patients = await request(backendApp).get("/api/patient");
 
     expect(patients.status).toBe(200);
     expect(patients.body).toHaveLength(1);
 
-    const appointments = await request(appointmentApp)
-      .get("/appointments");
+    const appointments = await request(appointmentApp).get("/appointments");
 
     expect(appointments.status).toBe(200);
     expect(appointments.body).toHaveLength(1);
-
   });
-
 });
